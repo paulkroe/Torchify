@@ -1,0 +1,42 @@
+# Proposal
+Proposal/
+
+# Node.js
+webapp/node_modules/
+webapp/npm-debug.log*
+webapp/yarn-debug.log*
+webapp/yarn-error.log*
+webapp/.env
+webapp/.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+pip-log.txt
+*.pyo
+*.env
+*.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Byte-compiled / optimized / DLL files
+*.pyc
+
+# Virtual environment
+.venv/
+
+# Testing
+.pytest_cache/
+.tox/
+
+# IDE files
+.vscode/
+.idea/
