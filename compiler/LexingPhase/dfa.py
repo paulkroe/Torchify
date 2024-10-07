@@ -58,6 +58,15 @@ def kw_dfa(name):
     transitions = {(f"q{i}", ch): f"q{i+1}"  for i, ch in enumerate(name)}
     return DFA(name=f"KW_{name.upper()}", states = states, transitions=transitions, start_state=start_state, accept_states=accepted_states)
 
+def op_dfa(name, op):
+    assert len(name) > 0 and len(op), "Error: Cannot generate DFS for op with length 0."
+    states = {f"q{i}" for i in range(len(op) + 1)}
+    start_state = 'q0'
+    accepted_states = {f"q{len(op)}"}
+    transitions = {(f"q{i}", ch): f"q{i+1}"  for i, ch in enumerate(op)}
+    return DFA(name=name, states = states, transitions=transitions, start_state=start_state, accept_states=accepted_states)
+
+
 def identifier_dfa():
     alphabet = [chr(i) for i in range(ord('a'), ord('z') + 1)]
     digits = [f"{i}" for i in range(10)]
@@ -132,7 +141,7 @@ def load_dfas():
             dfas.append(kw_dfa(kw))
         
         # get DFAs recognizing single chars
-        singles = {
+        SYMBOLS = {
             "SYMBOL_COLON": ':',
             "SYMBOL_LBRACE": '{',
             "SYMBOL_RBRACE": '}',
@@ -141,10 +150,62 @@ def load_dfas():
             "SYMBOL_LPAREN": '(',
             "SYMBOL_RPAREN": ')',
             "SYMBOL_COMMA": ',',
+            "SYMBOL_DOT": '.'
         }
-        for name, ch in singles.items():
-            dfas.append(single_char_dfa(name, ch))
-       
+
+        for name, sym in SYMBOLS.items():
+            dfas.append(single_char_dfa(name, sym))
+        
+        # get DFAs recognizing single chars
+
+        OPS = {
+            # Arithmetic Operators
+            "OP_PLUS": '+',
+            "OP_MINUS": '-',
+            "OP_MULTIPLY": '*',
+            "OP_DIVIDE": '/',
+            "OP_MODULO": '%',
+            "OP_EXPONENT": '**',
+            "OP_FLOOR_DIVIDE": '//',
+            
+            # Assignment Operators
+            "OP_EQUAL": '=',
+            "OP_PLUS_EQUAL": '+=',
+            "OP_MINUS_EQUAL": '-=',
+            "OP_MULTIPLY_EQUAL": '*=',
+            "OP_DIVIDE_EQUAL": '/=',
+            "OP_MODULO_EQUAL": '%=',
+            "OP_EXPONENT_EQUAL": '**=',
+            "OP_FLOOR_DIVIDE_EQUAL": '//=',
+            
+            # Comparison Operators
+            "OP_EQUAL_EQUAL": '==',
+            "OP_NOT_EQUAL": '!=',
+            "OP_GREATER_THAN": '>',
+            "OP_LESS_THAN": '<',
+            "OP_GREATER_EQUAL": '>=',
+            "OP_LESS_EQUAL": '<=',
+            
+            # Logical Operators
+            "OP_AND": 'and',
+            "OP_OR": 'or',
+            "OP_NOT": 'not',
+            
+            # Bitwise Operators
+            "OP_BITWISE_AND": '&',
+            "OP_BITWISE_OR": '|',
+            "OP_BITWISE_NOT": '~',
+            "OP_BITWISE_XOR": '^',
+            "OP_LEFT_SHIFT": '<<',
+            "OP_RIGHT_SHIFT": '>>',
+            
+       }
+
+
+        for name, op in OPS.items():
+            dfas.append(op_dfa(name, op))
+
+        
         dfas.append(identifier_dfa())
         dfas.append(float_dfa())
         dfas.append(string_dfa())
@@ -152,4 +213,4 @@ def load_dfas():
         return dfas
 
 if __name__ == "__main__":
-    pass
+    print("in" in kwlist)

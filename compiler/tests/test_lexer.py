@@ -198,6 +198,147 @@ def test_not_ending_string(lexer):
         "<INVALID_TOKEN, \"var    another\'>"
     ]
 
+def test_op(lexer):
+    # Test for '+'
+    lexer("+")
+    assert lexer.token_stream == [
+        "<OP_PLUS, +>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '-'
+    lexer("-")
+    assert lexer.token_stream == [
+        "<OP_MINUS, ->"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '*'
+    lexer("*")
+    assert lexer.token_stream == [
+        "<OP_MULTIPLY, *>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '/'
+    lexer("/")
+    assert lexer.token_stream == [
+        "<OP_DIVIDE, />"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '%'
+    lexer("%")
+    assert lexer.token_stream == [
+        "<OP_MODULO, %>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '**'
+    lexer("**")
+    assert lexer.token_stream == [
+        "<OP_EXPONENT, **>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '//'
+    lexer("//")
+    assert lexer.token_stream == [
+        "<OP_FLOOR_DIVIDE, //>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '='
+    lexer("=")
+    assert lexer.token_stream == [
+        "<OP_EQUAL, =>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '=='
+    lexer("==")
+    assert lexer.token_stream == [
+        "<OP_EQUAL_EQUAL, ==>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '!='
+    lexer("!=")
+    assert lexer.token_stream == [
+        "<OP_NOT_EQUAL, !=>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '>'
+    lexer(">")
+    assert lexer.token_stream == [
+        "<OP_GREATER_THAN, >>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '<'
+    lexer("<")
+    assert lexer.token_stream == [
+        "<OP_LESS_THAN, <>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '>='
+    lexer(">=")
+    assert lexer.token_stream == [
+        "<OP_GREATER_EQUAL, >=>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '<='
+    lexer("<=")
+    assert lexer.token_stream == [
+        "<OP_LESS_EQUAL, <=>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '&'
+    lexer("&")
+    assert lexer.token_stream == [
+        "<OP_BITWISE_AND, &>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '|'
+    lexer("|")
+    assert lexer.token_stream == [
+        "<OP_BITWISE_OR, |>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '~'
+    lexer("~")
+    assert lexer.token_stream == [
+        "<OP_BITWISE_NOT, ~>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '^'
+    lexer("^")
+    assert lexer.token_stream == [
+        "<OP_BITWISE_XOR, ^>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '<<'
+    lexer("<<")
+    assert lexer.token_stream == [
+        "<OP_LEFT_SHIFT, <<>"
+    ]   
+    lexer.token_stream = []
+    
+    # Test for '>>'
+    lexer(">>")
+    assert lexer.token_stream == [
+        "<OP_RIGHT_SHIFT, >>>"
+    ]   
+    
+
 @pytest.mark.parametrize(
     "input_string, expected_output",
     [
