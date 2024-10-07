@@ -47,10 +47,10 @@ class DFA:
         else:
             return 0  # Neither accepted nor rejected
 
-def single_char_dfs(name, ch):
+def single_char_dfa(name, ch):
     return DFA(name=name, states={"q0", "q1"}, transitions={('q0', ch): 'q1'}, start_state="q0", accept_states={"q1"})
 
-def kw_dfs(name):
+def kw_dfa(name):
     assert len(name) > 0, "Error: Cannot generate DFS for keyword with length 0."
     states = {f"q{i}" for i in range(len(name) + 1)}
     start_state = 'q0'
@@ -58,17 +58,78 @@ def kw_dfs(name):
     transitions = {(f"q{i}", ch): f"q{i+1}"  for i, ch in enumerate(name)}
     return DFA(name=f"KW_{name.upper()}", states = states, transitions=transitions, start_state=start_state, accept_states=accepted_states)
 
-def identifier_dfs(name):
-    pass
+def identifier_dfa():
+    alphabet = [chr(i) for i in range(ord('a'), ord('z') + 1)]
+    digits = [f"{i}" for i in range(10)]
+   
+    transitions = {("q0", ''.join(['_'] + alphabet + [ch.upper() for ch in alphabet])): "q1", 
+                   ("q1", ''.join(['_'] + alphabet + [ch.upper() for ch in alphabet] + digits)): "q1"
+                   }
 
+    return DFA(name="IDENTIFIER", states={"q0", "q1"}, transitions=transitions, start_state="q0", accept_states={"q1"})
 
+def float_dfa():
+    digits = [f"{i}" for i in range(10)]
+    
+    states = {
+        "q0",  # Start state
+        "q1",  # Minus sign
+        "q2",  # Integer part
+        "q3",  # Decimal point
+        "q4",  # Fractional part
+        "q5",  # Exponent 'e' or 'E'
+        "q6",  # Sign after exponent
+        "q7"   # Exponent digits
+    }
+    transitions = {
+        ("q0", "-"): "q1",
+        ("q0", "".join(digits)): "q2",
+        ("q1", "".join(digits)): "q2",
+        ("q2", "".join(digits)): "q2",
+        ("q0", "."): "q3",
+        ("q1", "."): "q3",
+        ("q2", "."): "q3",
+        ("q2", "e"): "q5",
+        ("q2", "E"): "q5",
+        ("q3", "".join(digits)): "q4",
+        ("q4", "".join(digits)): "q4",
+        ("q4", "e"): "q5",
+        ("q4", "E"): "q5",
+        ("q5", "".join(digits)): "q7",
+        ("q5", "+"): "q6",
+        ("q5", "-"): "q6",
+        ("q6", "".join(digits)): "q7",
+        ("q7", "".join(digits)): "q7",
+    }
+
+    return DFA(name="FLOAT", states=states, transitions=transitions, start_state="q0", accept_states={"q2", "q3", "q4", "q7"}) 
+
+def string_dfa():
+    alphabet = [chr(i) for i in range(32, 127) if chr(i) not in ["'", '"']]
+
+    states = {
+        "q0", # start state
+        "q1", # any printable char except ' and "
+        "q2", # any printable char except ' and "
+        "q3" # accept state state
+    }
+
+    transitions = {
+        ("q0", "'"): "q1",
+        ("q0", '"'): "q2",
+        ("q1", ''.join(alphabet)): "q1",
+        ("q2", ''.join(alphabet)): "q2",
+        ("q1", "'"): "q3",
+        ("q2", '"'): "q3"
+    }
+    return DFA(name="LITERAL_STRING", states=states, transitions=transitions, start_state="q0", accept_states={"q3"})
 
 def load_dfas():
         dfas = []
 
         # ORDERING OF THE DFAS HERE CORRESPONDS TO ORDER OF THE RULES IN THE GRAMMAR
         for kw in kwlist:
-            dfas.append(kw_dfs(kw))
+            dfas.append(kw_dfa(kw))
         
         # get DFAs recognizing single chars
         singles = {
@@ -82,14 +143,13 @@ def load_dfas():
             "SYMBOL_COMMA": ',',
         }
         for name, ch in singles.items():
-            dfas.append(single_char_dfs(name, ch))
-
+            dfas.append(single_char_dfa(name, ch))
+       
+        dfas.append(identifier_dfa())
+        dfas.append(float_dfa())
+        dfas.append(string_dfa())
+        
         return dfas
 
 if __name__ == "__main__":
-    dfs = kw_dfs("False")
-    for ch in "False":
-        dfs(ch)
-    print(dfs.status())
-    for kw in kwlist:
-        print(kw)
+    pass

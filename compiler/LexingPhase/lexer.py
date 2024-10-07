@@ -24,12 +24,24 @@ class Lexer():
                     return 
  
     def munch(self, start_idx):
+        # Reset DFAs
+        for dfa in self.dfas:
+            dfa.reset()
+
         idx = start_idx
 
         cur = [0 for _ in range(len(self.dfas))]
         next = [None for _ in range(len(self.dfas))]
 
-        while idx != len(self.input_stream) and not self.input_stream[idx].isspace():
+        sq = 0 # in single quotes
+        dq = 0 # in double quotes
+
+        while idx != len(self.input_stream) and (not self.input_stream[idx].isspace() or sq or dq):
+            if self.input_stream[idx] == '"':
+                dq = (dq + 1) % 2
+            if self.input_stream[idx] == "'":
+                sq = (sq + 1) % 2
+
             for i, dfa in enumerate(self.dfas):
                 next[i] = dfa(self.input_stream[idx])
             # No DFA can match the next input token
@@ -41,18 +53,25 @@ class Lexer():
 
         # Could not match token
         if max(cur) <= 0:
-            self.token_stream = [f"INVALID_TOKEN (Value = \"{self.input_stream[start_idx: idx+1]}\")"]
+            self.token_stream = [f"<INVALID_TOKEN, {self.input_stream[start_idx: idx+1]}>"]
+            
             return -1
 
-        self.token_stream += [f"{self.dfas[cur.index(1)].name} (Value = \"{self.input_stream[start_idx: idx]}\")"]
+        self.token_stream += [f"<{self.dfas[cur.index(1)].name}, {self.input_stream[start_idx: idx]}>"]
 
-        # Reset DFAs
-        for dfa in self.dfas:
-            dfa.reset()
+
 
         return idx
 
 if __name__ == "__main__":
     lexer = Lexer()
-    lexer("False $")
-    print(lexer.token_stream)
+    lexer("\'var    another\"")
+    assert lexer.token_stream == [
+        "<INVALID_TOKEN, \'var    another\">"
+    ], lexer.token_stream
+    lexer.token_stream = []
+   
+    lexer("\'var    another\"")
+    assert lexer.token_stream == [
+        "<INVALID_TOKEN, \'var    another\">"
+    ], lexer.token_stream
