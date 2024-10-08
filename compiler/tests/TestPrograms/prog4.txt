@@ -1,0 +1,14 @@
+{
+    linear: {
+        name: "Layer 0",
+        dim_in: 784,
+        dim_out: 128,
+        input_tensor_shape: ["*", 784],
+        output_tensor_shape: ["*", 128]
+    },
+    relu: {
+        name: "Activation 0",
+        input_tensor_shape: ["*"],
+        output_tensor_shape: ["*"]
+    }
+}

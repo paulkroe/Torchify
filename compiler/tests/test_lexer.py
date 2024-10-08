@@ -377,6 +377,22 @@ def test_edge_cases(lexer, input_string, expected_output):
     lexer(input_string)
     assert lexer.token_stream == expected_output
 
+def test_panic_mode(lexer):
+    lexer.panic_mode = True
+     
+    lexer("$if$ + \"test\"")
+    assert lexer.token_stream == [
+        '<KW_IF, if>',
+        '<OP_PLUS, +>',
+        '<LITERAL_STRING, "test">'
+    ]
+    lexer.token_stream = []
+    lexer("\'var    another\"")
+    assert lexer.token_stream == []
+    lexer.token_stream = []
+    lexer("\'var    another")
+    assert lexer.token_stream == []
+
 if __name__ == "__main__":
     lexer = Lexer()
     test_invalid_tokens(lexer)

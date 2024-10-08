@@ -1,9 +1,9 @@
 from LexingPhase import load_dfas
 
 class Lexer():
-    def __init__(self):
+    def __init__(self, panic_mode=False):
         """Setup DFA for each tokenclass"""
-        # TODO add operations like + - * / % ** == 
+        self.panic_mode = panic_mode
         self.dfas = load_dfas()
         
         # storing the input and the token stream
@@ -14,7 +14,7 @@ class Lexer():
         # TODO: careful with end of file
         self.input_stream = input_stream
         idx = 0
-        while(idx != len(self.input_stream)):
+        while(idx < len(self.input_stream)):
             if(self.input_stream[idx].isspace()):
                 idx += 1
             else:
@@ -53,25 +53,24 @@ class Lexer():
 
         # Could not match token
         if max(cur) <= 0:
-            self.token_stream = [f"<INVALID_TOKEN, {self.input_stream[start_idx: idx+1]}>"]
-            
-            return -1
-
-        self.token_stream += [f"<{self.dfas[cur.index(1)].name}, {self.input_stream[start_idx: idx]}>"]
-
-
+            if self.panic_mode:
+                print(f"Warning: found and ignored invalid token \"{self.input_stream[start_idx: idx+1]}\"")
+                idx += 1
+            else:
+                self.token_stream = [f"<INVALID_TOKEN, {self.input_stream[start_idx: idx+1]}>"]
+                return -1
+        else:
+            self.token_stream += [f"<{self.dfas[cur.index(1)].name}, {self.input_stream[start_idx: idx]}>"]
 
         return idx
 
 if __name__ == "__main__":
-    lexer = Lexer()
-    lexer("\'var    another\"")
-    assert lexer.token_stream == [
-        "<INVALID_TOKEN, \'var    another\">"
-    ], lexer.token_stream
+    lexer = Lexer(panic_mode=True)
+    lexer("$if$ + \"test\"")
+    print(lexer.token_stream)
     lexer.token_stream = []
-   
     lexer("\'var    another\"")
-    assert lexer.token_stream == [
-        "<INVALID_TOKEN, \'var    another\">"
-    ], lexer.token_stream
+    print(lexer.token_stream)
+    lexer.token_stream = []
+    lexer("\'var    another")
+    print(lexer.token_stream)

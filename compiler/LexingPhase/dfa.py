@@ -197,14 +197,12 @@ def load_dfas():
             "OP_BITWISE_NOT": '~',
             "OP_BITWISE_XOR": '^',
             "OP_LEFT_SHIFT": '<<',
-            "OP_RIGHT_SHIFT": '>>',
-            
+            "OP_RIGHT_SHIFT": '>>'
        }
 
 
         for name, op in OPS.items():
             dfas.append(op_dfa(name, op))
-
         
         dfas.append(identifier_dfa())
         dfas.append(float_dfa())
@@ -213,4 +211,5 @@ def load_dfas():
         return dfas
 
 if __name__ == "__main__":
-    print("in" in kwlist)
+    for kw in kwlist:
+        print(kw)

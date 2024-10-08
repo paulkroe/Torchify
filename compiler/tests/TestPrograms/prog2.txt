@@ -1,0 +1,4 @@
+[
+name: "I can put keywords like while and if in here and they still get recognized as strings",
+but_i_can_also_match_keywords: if, while, continue
+]

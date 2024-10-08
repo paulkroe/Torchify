@@ -1,0 +1,7 @@
+{
+    linear: {
+        name: "I can put keywords like while and if in there and they still get recognized as strings",
+        keyword: while,
+        float: 123.321
+    }
+}
