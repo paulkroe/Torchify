@@ -30,7 +30,7 @@ The following regular expressions are used to match different token classes:
 
 ## 2. Implementation Description  
 
-The lexer implementation is split into two key components: DFA logic and lexer logic.
+The lexer implementation is split into two key components: DFA logic and lexer logic. Both can be found in `compiler/LexicalPhase`.
 
 ### DFA Logic  
 The core DFA logic is simple and encapsulated in the `DFA` class. Each DFA represents one token class, and the lexer uses a collection of DFAs to process input. A notable method in this implementation is `status()`, which returns the current state of the DFA:  
@@ -71,15 +71,41 @@ The lexer uses panic mode for error handling. If no DFA accepts the current inpu
 
 ---
 
-### Installation  
-To set up the project, use the following commands:
+### Installation and Testing
+The script ```run_tests.sh``` can be used to setup the project and run the lexer on the five test programs.
 
+In case you are not using conda, please run the following commands after setting up and activating your virtual environment.
 ```bash
-conda create -n "Torchify" python=3.11.0
-cd <project_directory>
+cd compiler
 pip install -e .
 pip install pytest
+cd ..
+
+python3 compiler/tests/TestPrograms/testprogs.py
 ```
+As requested by the assignment the expected output for the test programs is in:
+```
+compiler/tests/TestPrograms/LexedPrograms
+```
+During development pytest was used. These tests can be run from within the ```compiler/``` directory using the following command:
+```
+pytest
+```
+
+The five test programs are used to demonstrate the following functionalities:
+
+- Program 0: recognize basic tokens and demonstrate that whitespaces within strings are handled properly
+
+- Program 1: manage a variety of different python floats including scientific notation
+
+- Program 2: demonstrate that keywords are identified correctly using maximum munch
+
+- Program 3: show how panic mode is used to recover from error
+
+- Program 4: give a longer example if how an actual program of the language might look like
+
+
+
 ### Complete List of Keywords, Symbols and Operators
 SYMBOLS:
 ```

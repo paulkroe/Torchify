@@ -1,5 +1,5 @@
 import pytest
-from LexingPhase import DFA  # Adjust this import based on your package structure
+from LexicalPhase import DFA  # Adjust this import based on your package structure
 
 # Fixture to create a sample finite automaton
 @pytest.fixture

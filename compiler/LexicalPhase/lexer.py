@@ -1,4 +1,4 @@
-from LexingPhase import load_dfas
+from LexicalPhase import load_dfas
 
 class Lexer():
     def __init__(self, panic_mode=False):

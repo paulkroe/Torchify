@@ -1,5 +1,5 @@
 import pytest
-from LexingPhase import Lexer
+from LexicalPhase import Lexer
 from keyword import kwlist
 
 @pytest.fixture
