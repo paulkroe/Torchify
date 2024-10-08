@@ -1,5 +1,5 @@
 "Someone might accidentally use the wrong quote to close the string',
 "But thats not a problem, panic mode comes to the rescue",
 "I could also use chars that are not in the alphabet like:" $ or @,
-'they just get ignored similar to invalid identifiers':
+'an invalid identifiers will get split up in two tokens':
 123_invalid

@@ -11,7 +11,7 @@ The lexical grammar for this lexer is designed to categorize input into six fund
 - **IDENTIFIER**: Used for valid Python identifiers.
 - **LITERAL_STRING**: Represents strings enclosed in single (`'`) or double (`"`) quotes. This class does not fully support Python strings; it excludes multiline strings, f-strings, and certain escape characters.
 
-Whitespace (spaces, tabs, newlines) acts as a delimiters unless they are part of a string.
+Whitespace (spaces, tabs, newlines) acts as a delimiters unless they are part of a string. However, tokens don't have to end with a whitespace. For example: if() 
 
 A complet list of keywords, symbols, and operators can be found at the bottom of this page.
 
@@ -44,6 +44,8 @@ This status information is used to implement the "maximum munch" heuristic.
 Initialized with a collection of necessary dfas, the lexer processes the input string one character at a time. It skips over initial whitespace and then begins tokenization by calling the `munch()` method. This method resets all DFAs and feeds characters to each DFA, recording their statuses. The process continues until the lexer encounters a whitespace or all DFAs reject the input. At this point, the lexer selects the token class corresponding to the DFA that accepted the longest match.
 
 If multiple DFAs accept the input, the lexer selects the token class with the highest priority. For example:
+- Input: `"if()"` → Output: `[<KW_IF, if>, <SYMBOL_LPAREN, (>, <SYMBOL_RPAREN, )>]`
+
 
 | Input        | 'i' | 'f' |
 |--------------|-----|-----|

@@ -2,3 +2,4 @@
 list: [.123, 42, -123, -456.789, 'put in a string for good measure', 123., 12.34e-10, 0.001, 12.34E+10, 361E12]
 'here comes an invalid one:'
 123e123.123
+'two seperate tokens as expected'
