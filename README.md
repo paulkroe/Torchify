@@ -74,6 +74,12 @@ The lexer uses panic mode for error handling. If no DFA accepts the current inpu
 ---
 
 ### Installation and Testing
+As requested on Ed there is a Dockerfile for this project.
+```
+docker build -t lexer .
+docker run --rm lexer
+```
+
 The script ```run_tests.sh``` can be used to setup the project and run the lexer on the five test programs.
 
 In case you are not using conda, please run the following commands after setting up and activating your virtual environment.
