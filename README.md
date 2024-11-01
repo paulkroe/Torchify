@@ -1,5 +1,9 @@
-# PLT Project Part 1: Lexical Phase  
+# PLT Project
 Group members: Paul Kroeger (pk2819)
+# Part 2: Syntacital Phase
+re 
+graphviz for visualization
+# Part 1: Lexical Phase  
 
 ## 1. Lexical Grammar Design  
 The lexical grammar for this lexer is designed to categorize input into six fundamental token classes:
