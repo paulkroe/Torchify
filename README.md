@@ -174,12 +174,17 @@ The lexer uses panic mode for error handling. If no DFA accepts the current inpu
 ### Installation and Testing
 As requested on Ed there is a Dockerfile for this project.
 ```
-docker build -t torchify .
+docker build --network="host" -t torchify . 
 docker run --rm torchify
 docker run -v $(pwd)/output:/compiler/tests/TestPrograms torchify
 ```
 
-The script ```run_tests.sh``` can be used to setup the project and run the lexer on the five test programs.
+In case you are using [Docker Playground](https://labs.play-with-docker.com/), you can retrive the ast visualization using the following command: 
+```
+curl -F "file=@ast.png" https://file.io
+```
+
+The script ```run_tests.sh``` can be used to setup the project and run lexer and parser on the test programs.
 
 In case you are not using conda, please run the following commands after setting up and activating your virtual environment.
 ```bash
