@@ -1,5 +1,4 @@
 import re
-from graphviz import Digraph
 from LexicalPhase import Lexer
 
 PARSE_TABLE = {
@@ -78,37 +77,7 @@ PARSE_TABLE = {
     }
 }
 
-def visualize_ast(ast, filename='ast'):
-    dot = Digraph(comment='Abstract Syntax Tree')
-    node_id = 0
 
-    def add_nodes_edges(node, parent_id=None):
-        nonlocal node_id
-        current_id = str(node_id)
-        label = str(node[0])
-
-        is_leaf = len(node) == 1 and not label in PARSE_TABLE
-
-        if is_leaf:
-            dot.node(current_id, label, style='filled', fillcolor='green')
-        else:
-            dot.node(current_id, label)
-
-        if parent_id is not None:
-            dot.edge(parent_id, current_id)
-        node_id += 1
-
-        for child in node[1:]:
-            if isinstance(child, list):
-                add_nodes_edges(child, current_id)
-            else:
-                child_id = str(node_id)
-                dot.node(child_id, str(child), style='filled', fillcolor='green')
-                dot.edge(current_id, child_id)
-                node_id += 1
-
-    add_nodes_edges(ast)
-    dot.render(filename, format='png', cleanup=True)
 
 def get_non_terminal(tag):
     if (tag == "$"):
@@ -187,7 +156,7 @@ def ll1_parse(input_tokens):
 
         # Try ignoring the current module
         else:
-            print(f"Error: Syntax error in module: {get_token(input_tokens[index])} in \"{current_module}\"")
+            print(f"Error: Syntax error in module: \"{current_module}\"")
             print(f"Ignorming module: \"{current_module}\"")
             index = next((i for i, tag in enumerate(input_tokens[index:], start=index) if "," == tag), len(input_tokens) - 3) + 1
             # Try to remove current module and see if parsable
@@ -201,12 +170,5 @@ def ll1_parse(input_tokens):
         print("Error: Input not fully consumed")
         return False, None
 
-if __name__ == "__main__":
-    with open(f'../tests/TestPrograms/prog9.txt', 'r') as file:
-        file_contents = file.read()
-    lexer = Lexer()
-    lexer(file_contents)
-    (valid, root) = ll1_parse(lexer.token_stream)
-    if valid:
-        visualize_ast(root)
+
 

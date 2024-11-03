@@ -6,11 +6,10 @@
     },
     batchnorm: {
         name = "Batchnorm";
-        input_tensor_shape["*"];
+        input_tensor_shape = ["*"];
     },
     linear2: {
         name = "Layer 1";
         dim_in = 128;
         dim_out = 10;
-    }
-}
+    

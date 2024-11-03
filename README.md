@@ -78,13 +78,21 @@ Intuitively, a program consists of modules (linear0 and linear1 in this examples
 
 To parse this grammar we implement an LL(1) parser in `compiler/SyntacticPhase/parser.py`.
 
+We use the following prase table:
+
+
+The requested shell script is described in the installation section while the video is saved as `compiler/demo.mp4`. Generating the parse tree shown in the video is not part of the demo that is executed by the shell script becaues it requires graphviz to be installed. In case you want to reproduce the video pleaes use the Docker file provided.
+
 ### Sample Input Programs
 To demonstrate the capabilities of our parser we provide 5 sample programs (`prog5, ..., prog9`) in `compiler/tests/TestPrograms`.
 - `prog5`: Valid program that demonstrates how modules can be stacked
 - `prog6`: Valid program that demonstrates the use of simple control flow statements (`if`, `elif`, `else`).
 - `prog7`: Valid program that demonstrates how control flow statements can be nested.
-- `prog8`:
-- `prog9`:
+
+To handle errors we implemented panic mode. More precisely, if we detect a syntax errror in a module, we skip the module that contained the error. The `batchnorm` module in program 8 contains a syntax error, but panic mode is able to recover from that by just ignoring the batchnorm module all together.
+- `prog8`: Invalid program that demonstrates how panic mode deals with invalid programs
+The downside of panic mode is that it can't handle cases where closing braces are missing to function as delimiters.
+- `prog9`: Invalid program that demonstrates errors panic mode can't recover from
 
 
 re 
@@ -166,8 +174,8 @@ The lexer uses panic mode for error handling. If no DFA accepts the current inpu
 ### Installation and Testing
 As requested on Ed there is a Dockerfile for this project.
 ```
-docker build -t lexer .
-docker run --rm lexer
+docker build -t torchify .
+docker run --rm torchify
 ```
 
 The script ```run_tests.sh``` can be used to setup the project and run the lexer on the five test programs.

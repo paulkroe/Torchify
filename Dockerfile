@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY . /app
 
-RUN pip install --no-cache-dir -e ./compiler
+RUN apt-get update && apt-get install -y graphviz && rm -rf /var/lib/apt/lists/*
 
-CMD ["python3", "compiler/tests/TestPrograms/testprogs.py"]
+RUN pip install --no-cache-dir -e ./compiler && pip install --no-cache-dir graphviz
+
+CMD python3 compiler/tests/TestPrograms/testprogs.py && python3 compiler/tests/TestPrograms/demo.py
