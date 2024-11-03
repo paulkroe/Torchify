@@ -10,7 +10,7 @@
         name = "Layer 1";
         dim_in = 128;
         dim_out = 10;
-        input_tensor_shape = ["*", 128];
+        input_tensor_shape["*", 128];
         output_tensor_shape = ["*", 10];
     }
 }

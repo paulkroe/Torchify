@@ -1,0 +1,16 @@
+{
+    linear0: {
+        name = "Layer 0";
+        dim_in = 784;
+        dim_out = 128;
+    },
+    batchnorm: {
+        name = "Batchnorm";
+        input_tensor_shape["*"];
+    },
+    linear2: {
+        name = "Layer 1";
+        dim_in = 128;
+        dim_out = 10;
+    }
+}

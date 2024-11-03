@@ -1,6 +1,92 @@
 # PLT Project
 Group members: Paul Kroeger (pk2819)
+
 # Part 2: Syntacital Phase
+
+To provide a better intuition of the kind of program we want to accept consider the following valid program:
+```
+{
+    linear0: {
+        name = "Layer 0";
+        dim_in = 784;
+        dim_out = 128;
+        input_tensor_shape = ["*", 784];
+        output_tensor_shape = ["*", 128];
+    },
+    linear1: {
+        name = "Layer 1";
+        if (name == "Layer 0") {
+            dim_in = 512;
+            dim_out = 256;
+        } elif (name == "Layer 1") {
+            dim_in = 256;
+            dim_out = 128;
+        } elif (name == "Layer 2") {
+            dim_in = 128;
+            dim_out = 64;
+        }
+        else {
+            dim_in = 64;
+            dim_out = 32;
+        }
+    }
+}
+```
+
+Intuitively, a program consists of modules (linear0 and linear1 in this examples). Each modules consists of statements (experssions terminated by a ;, for example name = "Layer 0") or control flow statements (if, elif and else in this case). More precisely, the corresponding CFG can be described as:
+
+### Non-Terminals
+
+- **S**: Start symbol
+- **M**: Exands to a valid module
+- **M'**: Expands to a valid module or $\epsilon$
+- **A**: Defines a statement, which can be an assignment, a control structure (`while`, `if`, $...$), or a pass statement.
+- **A'**: Either a statment or $\epsilon$
+- **E**: Represents expressions, which can be basic data types (e.g., floats, strings) or lists
+- **E'**: Used to form more complicated expressions
+- **E''**: Used to represent expressions in lists
+- **L**: Represents lists
+- **L'**: Expands to a valid element in a list or $\epsilon$
+- **P**: Represents the branches in conditional statements (`if`, `elif`, `else`)
+- **P'**: Handles the `else` clause in conditional statements
+- **C**: Represents a conditional expression
+- **C'** and **C''**: Handle the components of a conditional expression
+
+### Terminals
+
+- `{`, `}`, `:`, `;`, `,`, `id`, `op`, `float`, `str`, `pass`, `while`, `if`, `elif`, `else`, `(`, `)`, `[`, `]`, `and`, `or`
+
+### Production Rules
+
+| Non-Terminal | Production Rule                            |
+|--------------|--------------------------------------------|
+| **S**        | `{ M M' }`                                 |
+| **M**        | `M → id : { A A' }`                        |
+| **M'**       | `ε \| , M`                                 |
+| **A**        | `id op E E' ; \| pass ; \| while ( C ) { A A'} \| if ( C ) { A A' } P P'` |
+| **A'**       | `ε \| A A'`                                |
+| **E**        | `float \| str \| L`                        |
+| **E'**       | `ε \| op E E'`                             |
+| **E''**       | `ε \| E `                                 |
+| **L**        | `[ E'' L' ]`                               |
+| **L'**       | `ε \| , E L'`                              |
+| **P**        | `ε \| elif ( C ) { A A' } P`               |
+| **P'**       | `ε \| else { A A' }`                       |
+| **C**        | `C' C''`                                   |
+| **C'**       | `id \| float \| str`                       |
+| **C''**      | `ε \| op C' C'' \| or C' C'' \| and C' C''`                               |
+
+To parse this grammar we implement an LL(1) parser in `compiler/SyntacticPhase/parser.py`.
+
+### Sample Input Programs
+To demonstrate the capabilities of our parser we provide 5 sample programs (`prog5, ..., prog9`) in `compiler/tests/TestPrograms`.
+- `prog5`: Valid program that demonstrates how modules can be stacked
+- `prog6`: Valid program that demonstrates the use of simple control flow statements (`if`, `elif`, `else`).
+- `prog7`: Valid program that demonstrates how control flow statements can be nested.
+- `prog8`:
+- `prog9`:
+
+
 re 
 graphviz for visualization
 # Part 1: Lexical Phase  

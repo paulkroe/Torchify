@@ -143,6 +143,7 @@ def load_dfas():
         # get DFAs recognizing single chars
         SYMBOLS = {
             "SYMBOL_COLON": ':',
+            "SYMBOL_SEMICOLON": ';',
             "SYMBOL_LBRACE": '{',
             "SYMBOL_RBRACE": '}',
             "SYMBOL_LBRACKET": '[',

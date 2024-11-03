@@ -1,0 +1,17 @@
+{
+    linear: {
+        name = "Layer 0";
+        activation = "Softmax";
+        if (name == "Layer 0" and activation == "Softmax") {
+            dim_in = 512;
+            dim_out = 256;
+        } elif ("Layer 1") {
+            dim_in = 256;
+            dim_out = 128;
+        } else {
+            dim_in = 128;
+            dim_out = 64;
+
+        }
+    }
+}
