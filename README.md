@@ -179,9 +179,6 @@ docker build --network="host" -t torchify .
 ```
 docker run --rm torchify
 ```
-```
-docker run -v $(pwd)/output:/compiler/tests/TestPrograms torchify
-```
 
 In case you are using [Docker Playground](https://labs.play-with-docker.com/), you can retrive the ast visualization using the following command: 
 ```
