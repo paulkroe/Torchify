@@ -1,11 +1,14 @@
-FROM python:3.11-slim
+FROM ubuntu:20.04
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update
+RUN apt-get install -y python3 python3-pip
+RUN apt-get install -y graphviz
 
 WORKDIR /app
-
+ 
 COPY . /app
 
-RUN apt-get update && apt-get install -y graphviz && rm -rf /var/lib/apt/lists/*
-
-RUN pip install --no-cache-dir -e ./compiler && pip install --no-cache-dir graphviz
+RUN pip3 install --no-cache-dir -e ./compiler && pip3 install --no-cache-dir graphviz
 
 CMD python3 compiler/tests/TestPrograms/testprogs.py && python3 compiler/tests/TestPrograms/demo.py

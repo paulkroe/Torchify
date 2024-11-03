@@ -176,6 +176,7 @@ As requested on Ed there is a Dockerfile for this project.
 ```
 docker build -t torchify .
 docker run --rm torchify
+docker run -v $(pwd)/output:/compiler/tests/TestPrograms torchify
 ```
 
 The script ```run_tests.sh``` can be used to setup the project and run the lexer on the five test programs.
