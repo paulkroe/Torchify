@@ -159,7 +159,10 @@ def ll1_parse(input_tokens):
         else:
             print(f"Error: Syntax error in module: \"{current_module}\"")
             print(f"Ignorming module: \"{current_module}\"")
-            index = next((i for i, tag in enumerate(input_tokens[index:], start=index) if "," == tag), len(input_tokens) - 3) + 1
+            try:
+                index = current_module_index + input_tokens[current_module_index:].index("<SYMBOL_COMMA, ,>")
+            except ValueError:
+                index = len(input_tokens) - 1
             # Try to remove current module and see if parsable
             if (current_module_index and index > 1):
                 return ll1_parse(input_tokens[:current_module_index - 1] + input_tokens[index:-1])

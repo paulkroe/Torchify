@@ -95,7 +95,7 @@ The downside of panic mode is that it can't handle cases where closing braces ar
 - `prog9`: Invalid program that demonstrates errors panic mode can't recover from
 
 The video demonstration of the project can be found in `demo.mp4`.
-It shows how the project can be setup online in [Docker Playground](https://labs.play-with-docker.com/). It generates the token streams and asts for the 10 sample programs. Additionally, it generates a more detailed visualization for program 5. For reference the output file can be found at `ast.png`.
+It shows how the project can be setup online in [Docker Playground](https://labs.play-with-docker.com/). It generates the token streams for 10 sample programs. For successfully parsed programs it outputs the parse tree as well as the ast generated.
 
 To represent asts as strings we use nested lists. For example, if we have a tree with root node A and two children B and C where B has another child D we would represent this as 
 ```
@@ -188,12 +188,6 @@ docker build --network="host" -t torchify .
 ```
 docker run --rm torchify
 ```
-
-In case you are using [Docker Playground](https://labs.play-with-docker.com/), you can retrive the ast visualization using the following command: 
-```
-curl -F "file=@ast.png" https://file.io
-```
-The file is then ready to be downloaded from file.io and should look like this ![image](ast.png)
 
 Alternatively, the script ```run_tests.sh``` can be used to setup the project and run lexer and parser on the test programs but it will not generate the visualization.
 

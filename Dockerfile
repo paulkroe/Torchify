@@ -1,14 +1,9 @@
-FROM ubuntu:20.04
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update
-RUN apt-get install -y python3 python3-pip
-RUN apt-get install -y graphviz
+FROM python:3.8-slim-buster
 
 WORKDIR /app
- 
+
 COPY . /app
 
-RUN pip3 install --no-cache-dir -e ./compiler && pip3 install --no-cache-dir graphviz
+RUN pip install --no-cache-dir -e ./compiler
 
-CMD python3 compiler/tests/TestPrograms/testprogs.py && python3 compiler/tests/TestPrograms/demo.py
+CMD ["python3", "compiler/tests/TestPrograms/testprogs.py"]

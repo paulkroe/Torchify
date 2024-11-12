@@ -1,6 +1,6 @@
 from LexicalPhase import Lexer
-from SyntacticPhase import ll1_parse, visualize_ast, parse_tree_to_ast, print_tree
-with open(f'compiler/tests/TestPrograms/prog7.txt', 'r') as file:
+from SyntacticPhase import ll1_parse, parse_tree_to_ast, print_tree
+with open(f'compiler/tests/TestPrograms/prog9.txt', 'r') as file:
     file_contents = file.read()
 
 print("INPUT:")
@@ -17,5 +17,4 @@ if valid:
     ast = parse_tree_to_ast(parse_tree)
     print("================================ AST ================================")
     print_tree(ast)
-    visualize_ast(ast)
 
