@@ -183,7 +183,7 @@ The lexer uses panic mode for error handling. If no DFA accepts the current inpu
 ### Installation and Testing
 As requested on Ed there is a Dockerfile for this project.
 ```
-docker build --network="host" -t torchify . 
+docker build -t torchify . 
 ```
 ```
 docker run --rm torchify
