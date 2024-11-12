@@ -77,7 +77,7 @@ PARSE_TABLE = {
     }
 }
 
-
+NONTERMINALS = ["S", "M", "M'", "A'", "A", "E", "E'", "L", "L'", "P", "P'", "C", "C'", "C''"]
 
 def get_non_terminal(tag):
     if (tag == "$"):
@@ -183,7 +183,7 @@ def parse_tree_to_ast(parse_tree):
                 del parse_tree[i]
                 continue  # Skip incrementing i to account for the removed element
         # delete all leaves that are non terminals
-        elif (isinstance(parse_tree[i], list) and (not parse_tree[i][0][0] == "<")):
+        elif (isinstance(parse_tree[i], list) and parse_tree[i][0][0] in NONTERMINALS):
             del parse_tree[i]
             continue
         # delete symbols that carry no semantic meaning
@@ -204,13 +204,16 @@ def parse_tree_to_ast(parse_tree):
         if (isinstance(parse_tree[i], str) and (parse_tree[i] == "A")):
             # this is an assignment
             if (isinstance(parse_tree[i+2][0], str) and parse_tree[i+2][0].startswith("<OP")):
-                parse_tree[i] = parse_tree[i+2][0][-3:-1].strip()
-                del parse_tree[i+2]
+                op = parse_tree[i+2][0][-3:-1].strip()
+                if op == "=":
+                    parse_tree[i] = "Assignment"
+                    parse_tree[i+2][0] = op
+                else:
+                    parse_tree[i] = f"OP: {op}"
             # this is a conditional statement
             elif (isinstance(parse_tree[i+1][0], str) and parse_tree[i+1][0].startswith("<KW")):
-                parse_tree[i] = parse_tree[i+1][0]
-                index = parse_tree[i].find(" ")
-                parse_tree[i] = parse_tree[i][index+1:-1]
+                index =parse_tree[i+1][0].index(" ")
+                parse_tree[i] = parse_tree[i+1][0][index+1:-1]
                 del parse_tree[i+1]
         # flatten A' expression
         if (parse_tree[i][0] == "A'"):
@@ -220,13 +223,15 @@ def parse_tree_to_ast(parse_tree):
         i += 1
         
     # if the last element is an attachment to an expression, we want to reoder it
-    if (parse_tree[-1][0] in ["E'", "C''"]):
-        del parse_tree[-1][0]
-        parse_tree[-1][0] = parse_tree[-1][0][0]
+    if (parse_tree[-1][0] == "E'"):
+        parse_tree[-1][1][0] = parse_tree[-1][1][0][-3:-1].strip()
+        parse_tree[-1][0] = f"OP {parse_tree[-1][1][0]}"
         parse_tree[-1] = [parse_tree[-1][0]] + [parse_tree[-2]] + parse_tree[-1][1:]
-        print(parse_tree[-1][0])
-        index = parse_tree[-1][0].index(" ")
-        parse_tree[-1][0] = parse_tree[-1][0][index+1:-1]
+        del parse_tree[-2]
+    if (parse_tree[-1][0] == "C''"):
+        parse_tree[-1][1][0] = parse_tree[-1][1][0][-3:-1].strip()
+        parse_tree[-1][0] = f"OP {parse_tree[-1][1][0]}"
+        parse_tree[-1] = [parse_tree[-1][0]] + [parse_tree[-2]] + parse_tree[-1][1:]
         del parse_tree[-2]
     
     return parse_tree    

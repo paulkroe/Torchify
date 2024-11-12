@@ -1,6 +1,6 @@
 from LexicalPhase import Lexer
-from SyntacticPhase import ll1_parse, visualize_ast, parse_tree_to_ast, print_nested_list
-with open(f'compiler/tests/TestPrograms/prog5.txt', 'r') as file:
+from SyntacticPhase import ll1_parse, visualize_ast, parse_tree_to_ast, print_tree
+with open(f'compiler/tests/TestPrograms/prog7.txt', 'r') as file:
     file_contents = file.read()
 
 print("INPUT:")
@@ -13,8 +13,9 @@ print("PARSING:")
 valid, parse_tree = ll1_parse(lexer.token_stream)
 if valid:
     print("================================ PARSE TREE ================================")
-    print_nested_list(parse_tree)
+    print_tree(parse_tree)
     ast = parse_tree_to_ast(parse_tree)
     print("================================ AST ================================")
-    print_nested_list(ast)
+    print_tree(ast)
     visualize_ast(ast)
+
