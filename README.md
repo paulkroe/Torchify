@@ -61,13 +61,13 @@ Intuitively, a program consists of modules (linear0 and linear1 in this examples
 | Non-Terminal | Production Rule                            |
 |--------------|--------------------------------------------|
 | **S**        | `{ M M' }`                                 |
-| **M**        | `M → id : { A A' }`                        |
+| **M**        | `id : { A A' }`                        |
 | **M'**       | `ε \| , M`                                 |
 | **A**        | `id op E E' ; \| pass ; \| while ( C ) { A A'} \| if ( C ) { A A' } P P'` |
 | **A'**       | `ε \| A A'`                                |
 | **E**        | `float \| str \| L`                        |
 | **E'**       | `ε \| op E E'`                             |
-| **E''**       | `ε \| E `                                 |
+| **E''**      | `ε \| E `                                  |
 | **L**        | `[ E'' L' ]`                               |
 | **L'**       | `ε \| , E L'`                              |
 | **P**        | `ε \| elif ( C ) { A A' } P`               |
@@ -94,9 +94,18 @@ To handle errors we implemented panic mode. More precisely, if we detect a synta
 The downside of panic mode is that it can't handle cases where closing braces are missing to function as delimiters.
 - `prog9`: Invalid program that demonstrates errors panic mode can't recover from
 
+The video demonstration of the project can be found in `demo.mp4`.
+It shows how the project can be setup online in [Docker Playground](https://labs.play-with-docker.com/). It generates the token streams and asts for the 10 sample programs. Additionally, it generates a more detailed visualization for program 5. For reference the output file can be found at `ast.png`.
 
-re 
-graphviz for visualization
+To represent asts as strings we use nested lists. For example, if we have a tree with root node A and two children B and C where B has another child D we would represent this as 
+```
+[A
+    [B
+        [D]
+    ],
+    [C]
+]
+```
 # Part 1: Lexical Phase  
 
 ## 1. Lexical Grammar Design  
@@ -184,8 +193,9 @@ In case you are using [Docker Playground](https://labs.play-with-docker.com/), y
 ```
 curl -F "file=@ast.png" https://file.io
 ```
+The file is then ready to be downloaded from file.io and should look like this ![image](ast.png)
 
-The script ```run_tests.sh``` can be used to setup the project and run lexer and parser on the test programs.
+Alternatively, the script ```run_tests.sh``` can be used to setup the project and run lexer and parser on the test programs but it will not generate the visualization.
 
 In case you are not using conda, please run the following commands after setting up and activating your virtual environment.
 ```bash

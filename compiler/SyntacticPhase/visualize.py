@@ -2,7 +2,7 @@ from graphviz import Digraph
 from .parser import PARSE_TABLE
 
 def visualize_ast(ast, filename='ast'):
-    dot = Digraph(comment='Abstract Syntax Tree')
+    dot = Digraph(comment='Parse Tree')
     node_id = 0
 
     def add_nodes_edges(node, parent_id=None):
@@ -32,3 +32,13 @@ def visualize_ast(ast, filename='ast'):
 
     add_nodes_edges(ast)
     dot.render(filename, format='png', cleanup=True)
+
+def print_nested_list(nested_list, indent_level=0):
+    indent = '    ' * indent_level
+    for item in nested_list:
+        if isinstance(item, list):
+            print(f"{indent}[")
+            print_nested_list(item, indent_level + 1)
+            print(f"{indent}]")
+        else:
+            print(f"{indent}{item}")

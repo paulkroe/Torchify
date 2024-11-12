@@ -137,6 +137,7 @@ def ll1_parse(input_tokens):
 
         elif top_symbol in PARSE_TABLE:
             if current_input in PARSE_TABLE[top_symbol]:
+                # used for panic mode
                 if top_symbol == "M":
                     current_module_index = index
                     current_module = get_token(input_tokens[index])
@@ -170,5 +171,62 @@ def ll1_parse(input_tokens):
         print("Error: Input not fully consumed")
         return False, None
 
+def parse_tree_to_ast(parse_tree):
 
-
+    i = 0
+    while i < len(parse_tree) and isinstance(parse_tree, list):
+        if len(parse_tree[i]) > 1:
+            # Recursively process subtree
+            parse_tree_to_ast(parse_tree[i])
+            # If the sublist is empty after processing delete it
+            if not parse_tree[i]:
+                del parse_tree[i]
+                continue  # Skip incrementing i to account for the removed element
+        # delete all leaves that are non terminals
+        elif (isinstance(parse_tree[i], list) and (not parse_tree[i][0][0] == "<")):
+            del parse_tree[i]
+            continue
+        # delete symbols that carry no semantic meaning
+        elif (isinstance(parse_tree[i], list) and (parse_tree[i][0].startswith("<SYMBOL"))):
+            del parse_tree[i]
+            continue
+        # eliminate terminals that don't help understanding the structure of the program
+        if (isinstance(parse_tree[i], list) and len(parse_tree[i]) == 2 and (not parse_tree[i][0] in ["S", "M", "L"])):
+            parse_tree[i] = parse_tree[i][1] 
+        # if this is the start node, rename it
+        if (isinstance(parse_tree[i], str) and (parse_tree[i] == "S")):
+            parse_tree[i] = "Program"
+        # if this represents a module, pull up name
+        if (isinstance(parse_tree[i], str) and (parse_tree[i] == "M")):
+            parse_tree[i] = f"Module \"{parse_tree[i+1][0][13:-1]}\""
+            del parse_tree[i+1]
+        # if this an expression, we need to handle several cases
+        if (isinstance(parse_tree[i], str) and (parse_tree[i] == "A")):
+            # this is an assignment
+            if (isinstance(parse_tree[i+2][0], str) and parse_tree[i+2][0].startswith("<OP")):
+                parse_tree[i] = parse_tree[i+2][0][-3:-1].strip()
+                del parse_tree[i+2]
+            # this is a conditional statement
+            elif (isinstance(parse_tree[i+1][0], str) and parse_tree[i+1][0].startswith("<KW")):
+                parse_tree[i] = parse_tree[i+1][0]
+                index = parse_tree[i].find(" ")
+                parse_tree[i] = parse_tree[i][index+1:-1]
+                del parse_tree[i+1]
+        # flatten A' expression
+        if (parse_tree[i][0] == "A'"):
+            del parse_tree[i][0]
+            parse_tree[:] = parse_tree[:i] + parse_tree[i] + parse_tree[i+1:]
+       
+        i += 1
+        
+    # if the last element is an attachment to an expression, we want to reoder it
+    if (parse_tree[-1][0] in ["E'", "C''"]):
+        del parse_tree[-1][0]
+        parse_tree[-1][0] = parse_tree[-1][0][0]
+        parse_tree[-1] = [parse_tree[-1][0]] + [parse_tree[-2]] + parse_tree[-1][1:]
+        print(parse_tree[-1][0])
+        index = parse_tree[-1][0].index(" ")
+        parse_tree[-1][0] = parse_tree[-1][0][index+1:-1]
+        del parse_tree[-2]
+    
+    return parse_tree    

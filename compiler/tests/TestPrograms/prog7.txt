@@ -2,12 +2,14 @@
     linear: {
         name = "Layer 0";
         activation = "Softmax";
-        if (name == "Layer 0" and activation == "Softmax") {
+        if (name == "Layer 0") {
             dim_in = 512;
             dim_out = 256;
-            if (dim_in == 512) {
+            if (dim_in == 512 + 1) {
                 some_id = "some string";
+                some_other_id = "some other string";
             }
+            pass;
         }
     }
 }
