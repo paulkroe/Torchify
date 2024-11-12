@@ -183,7 +183,7 @@ def parse_tree_to_ast(parse_tree):
                 del parse_tree[i]
                 continue  # Skip incrementing i to account for the removed element
         # delete all leaves that are non terminals
-        elif (isinstance(parse_tree[i], list) and parse_tree[i][0][0] in NONTERMINALS):
+        elif (isinstance(parse_tree[i], list) and parse_tree[i][0] in NONTERMINALS):
             del parse_tree[i]
             continue
         # delete symbols that carry no semantic meaning
@@ -193,6 +193,9 @@ def parse_tree_to_ast(parse_tree):
         # eliminate terminals that don't help understanding the structure of the program
         if (isinstance(parse_tree[i], list) and len(parse_tree[i]) == 2 and (not parse_tree[i][0] in ["S", "M", "L"])):
             parse_tree[i] = parse_tree[i][1] 
+        # this is a condition
+        if (0 and isinstance(parse_tree[i], str) and (parse_tree[i] == "C")):
+            parse_tree[i] = "Condition"
         # if this is the start node, rename it
         if (isinstance(parse_tree[i], str) and (parse_tree[i] == "S")):
             parse_tree[i] = "Program"
@@ -219,19 +222,25 @@ def parse_tree_to_ast(parse_tree):
         if (parse_tree[i][0] == "A'"):
             del parse_tree[i][0]
             parse_tree[:] = parse_tree[:i] + parse_tree[i] + parse_tree[i+1:]
-       
+        # flatten A' expression
+        if (isinstance(parse_tree[i], list) and parse_tree[i][0] in ["P", "P'"]):
+            index = parse_tree[i][1][0].index(" ")
+            parse_tree[i][0] = parse_tree[i][1][0][index+1:-1]
+            del parse_tree[i][1]
+        
         i += 1
         
     # if the last element is an attachment to an expression, we want to reoder it
     if (parse_tree[-1][0] == "E'"):
-        parse_tree[-1][1][0] = parse_tree[-1][1][0][-3:-1].strip()
+        index = parse_tree[-1][1][0].index(" ")
+        parse_tree[-1][1][0] = parse_tree[-1][1][0][index+1:-1]
         parse_tree[-1][0] = f"OP {parse_tree[-1][1][0]}"
         parse_tree[-1] = [parse_tree[-1][0]] + [parse_tree[-2]] + parse_tree[-1][1:]
         del parse_tree[-2]
     if (parse_tree[-1][0] == "C''"):
-        parse_tree[-1][1][0] = parse_tree[-1][1][0][-3:-1].strip()
+        index = parse_tree[-1][1][0].index(" ")
+        parse_tree[-1][1][0] = parse_tree[-1][1][0][index+1:-1]
         parse_tree[-1][0] = f"OP {parse_tree[-1][1][0]}"
         parse_tree[-1] = [parse_tree[-1][0]] + [parse_tree[-2]] + parse_tree[-1][1:]
-        del parse_tree[-2]
-    
+        del parse_tree[-2]  
     return parse_tree    
