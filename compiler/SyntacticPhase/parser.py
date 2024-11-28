@@ -7,7 +7,7 @@ PARSE_TABLE = {
     },
     "M'": {
         "}": [],
-        ",": [",", "M"]
+        ",": [",", "M", "M'"]
     },
     "M": {
         "id": ["id", ":", "{", "A", "A'", "}"],
@@ -118,6 +118,10 @@ def ll1_parse(input_tokens):
 
     root_node = None
 
+    # Initialize variables for panic mode
+    current_module_index = None
+    current_module = None
+
     while stack:
         top_symbol, parent_node = stack.pop()
         current_input = get_non_terminal(input_tokens[index])
@@ -127,8 +131,8 @@ def ll1_parse(input_tokens):
             return True, root_node
 
         elif top_symbol == current_input:
-            # print(f"Match terminal '{top_symbol}'")
-            node = [input_tokens[index]] # [top_symbol]
+            # Match terminal
+            node = [input_tokens[index]]
             if parent_node is not None:
                 parent_node.append(node)
             else:
@@ -137,12 +141,11 @@ def ll1_parse(input_tokens):
 
         elif top_symbol in PARSE_TABLE:
             if current_input in PARSE_TABLE[top_symbol]:
-                # used for panic mode
+                # Update current module info for panic mode
                 if top_symbol == "M":
                     current_module_index = index
                     current_module = get_token(input_tokens[index])
                 production = PARSE_TABLE[top_symbol][current_input]
-                # print(f"Output production {top_symbol} -> {production}")
                 node = [top_symbol]
                 if parent_node is not None:
                     parent_node.append(node)
@@ -151,28 +154,45 @@ def ll1_parse(input_tokens):
                 for symbol in reversed(production):
                     stack.append((symbol, node))
             else:
-                # print(f"Error: No rule for {top_symbol} with input {current_input}")
-                print("Reject")
-                return False, None
+                # Error detected, invoke panic mode
+                print(f"Error: No rule for {top_symbol} with input {current_input}")
+                # Invoke panic mode error recovery
+                if current_module_index is not None:
+                    print(f"Error: Syntax error in module: \"{current_module}\"")
+                    print(f"Ignoring module: \"{current_module}\"")
+                    # Skip tokens until synchronization token
+                    try:
+                        # Find the index of the next synchronization token (e.g., comma)
+                        next_comma_index = index + input_tokens[index:].index("<SYMBOL_COMMA, ,>")
+                        index = next_comma_index + 1  # Move past the comma
+                    except ValueError:
+                        # No synchronization token found, cannot recover
+                        print("Reject")
+                        return False, None
+                    # Reset the stack to continue parsing after the skipped module
+                    while stack and stack[-1][0] != "M":
+                        stack.pop()
+                    if stack:
+                        stack.pop()  # Remove "M" from the stack
+                    continue  # Continue parsing from the new index
+                else:
+                    print("Reject")
+                    return False, None
 
-        # Try ignoring the current module
         else:
-            print(f"Error: Syntax error in module: \"{current_module}\"")
-            print(f"Ignorming module: \"{current_module}\"")
-            try:
-                index = current_module_index + input_tokens[current_module_index:].index("<SYMBOL_COMMA, ,>")
-            except ValueError:
-                index = len(input_tokens) - 1
-            # Try to remove current module and see if parsable
-            if (current_module_index and index > 1):
-                return ll1_parse(input_tokens[:current_module_index - 1] + input_tokens[index:-1])
-            
+            # Handle unexpected symbols
+            print(f"Error: Unexpected symbol '{top_symbol}' at position {index}")
             print("Reject")
             return False, None
 
+    # If we exit the loop without matching the end of input
     if index < len(input_tokens) - 1:
         print("Error: Input not fully consumed")
         return False, None
+
+    print("Accept")
+    return True, root_node
+
 
 def parse_tree_to_ast(parse_tree):
 

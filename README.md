@@ -1,6 +1,8 @@
 # PLT Project
 Group members: Paul Kroeger (pk2819)
 
+# Part 3: Code Generation Phase
+
 # Part 2: Syntacital Phase
 
 To provide a better intuition of the kind of program we want to accept consider the following valid program:
@@ -62,7 +64,7 @@ Intuitively, a program consists of modules (linear0 and linear1 in this examples
 |--------------|--------------------------------------------|
 | **S**        | `{ M M' }`                                 |
 | **M**        | `id : { A A' }`                        |
-| **M'**       | `ε \| , M`                                 |
+| **M'**       | `ε \| , M M'`                                 |
 | **A**        | `id op E E' ; \| pass ; \| while ( C ) { A A'} \| if ( C ) { A A' } P P'` |
 | **A'**       | `ε \| A A'`                                |
 | **E**        | `float \| str \| L`                        |
@@ -90,7 +92,7 @@ To demonstrate the capabilities of our parser we provide 5 sample programs (`pro
 - `prog7`: Valid program that demonstrates how control flow statements can be nested.
 
 To handle errors we implemented panic mode. More precisely, if we detect a syntax errror in a module, we skip the module that contained the error. The `batchnorm` module in program 8 contains a syntax error, but panic mode is able to recover from that by just ignoring the batchnorm module all together.
-- `prog8`: Invalid program that demonstrates how panic mode deals with invalid programs
+- `prog8`: Invalid program that demonstrates how panic mode deals with invalid programs (input_tensor_shape["*"]; is missing an  "=")
 The downside of panic mode is that it can't handle cases where closing braces are missing to function as delimiters.
 - `prog9`: Invalid program that demonstrates errors panic mode can't recover from
 
