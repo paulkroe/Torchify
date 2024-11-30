@@ -207,110 +207,160 @@ def parse_tree_to_ast(node):
             remove_symbols(module)
             remove_A_prime(module)
             print(module)
-            flatten_expressions_in_module(module)
+            for node in module:
+                process_node(node)
             index += 1
 
     return ["Program"] + ast
 
-def flatten_expressions_in_module(module):
+
+def process_node(node):
     """
-    Flattens all expressions (E and E') within assignments (A nodes) in a module.
-    Modifies the module in place to remove E and E' nodes.
+    Processes any node by determining its type and acting accordingly.
 
     Args:
-        module: The module as a nested list.
-
-    Returns:
-        The modified module with all expressions flattened in place.
+        node: The node to process.
     """
-    def flatten_expression(nodes):
-        """
-        Flattens a list of expression nodes (E and E') into a flat list of operands and operators.
+    if isinstance(node, list) and node:
+        node_type = node[0]
+        print(node_type)
 
-        Args:
-            nodes: List of nodes representing the expression.
+        if node_type == 'A':
+            # Determine if the A node is a regular assignment or control flow
+            process_A_node(node)
+        elif node_type in ('P', "P'"):
+            process_control_flow(node)
+        else:
+            # Process child nodes recursively
+            for child in node[1:]:
+                process_node(child)
+        
+def process_A_node(node):
+    """
+    Processes an 'A' node, determining if it's a regular assignment or a control flow statement.
 
-        Returns:
-            A flattened list representing the arithmetic expression.
-        """
-        flattened = []
+    Args:
+        node: The 'A' node to process.
+    """
+    if len(node) < 2:
+        return  # Not enough elements to determine type
 
-        for node in nodes:
-            if not isinstance(node, list) or not node:
-                continue
-            if node[0] == 'E':
-                # Process E node: recursively flatten its children
-                flattened.extend(flatten_expression(node[1:]))
-            elif node[0] == "E'":
-                # Process E' node
-                if len(node) > 1:
-                    # Append operator
-                    flattened.append(node[1])
-                    # Flatten the following E node
-                    flattened.extend(flatten_expression(node[2:]))
+    second_element = node[1]
+
+    if isinstance(second_element, list):
+        element_value = second_element[0]
+        print(element_value)
+        if element_value.startswith('<IDENTIFIER'):
+            # Regular assignment
+            process_assignment(node)
+        elif element_value.startswith('<KW'):
+            # Control flow statement (if/elif/else)
+            process_control_flow(node)
+        else:
+            # Unknown structure, process child nodes
+            for child in node[1:]:
+                process_node(child)
+    else:
+        # Unexpected structure, process child nodes
+        for child in node[1:]:
+            process_node(child)
+
+def process_assignment(assignment_node):
+    """
+    Processes a regular assignment node ('A') to flatten its expressions.
+
+    Args:
+        assignment_node: The assignment node to process.
+    """
+    # Find the index of the semicolon
+    try:
+        semicolon_index = assignment_node.index(['<SYMBOL_SEMICOLON, ;>'])
+    except ValueError:
+        semicolon_index = len(assignment_node)
+
+    # Extract the expression nodes between the operator and semicolon
+    expression_nodes = assignment_node[3:semicolon_index]
+
+    # Flatten the expression nodes
+    flattened_expression = flatten_expression(expression_nodes)
+
+    # Replace the expression nodes with the flattened expression
+    assignment_node[3:semicolon_index] = [['<EXPRESSION>'] + flattened_expression]
+
+def process_control_flow(node):
+    """
+    Processes a control flow node representing if/elif/else structures.
+    Flattens conditions and recursively processes nested assignments.
+
+    Args:
+        node: The control flow node to process.
+    """
+    if len(node) < 2:
+        return  # Not enough elements
+
+    keyword_node = node[1]
+    if not (isinstance(keyword_node, list) and keyword_node[0].startswith('<KW')):
+        return  # Not a control flow node
+
+    # Extract keyword
+    keyword = keyword_node[0].split(',')[1].strip().rstrip('>')
+
+    idx = 2  # Start after the keyword
+
+    # Process condition for 'if' and 'elif'
+    if keyword in ['if', 'elif']:
+        # Expect '(' at node[idx]
+        if node[idx][0] == '<SYMBOL_LPAREN, (>':
+            del node[idx]  # Remove the '('
+            condition_node = node[idx]
+            if condition_node[0] == 'C':
+                # Flatten the condition
+                flattened_condition = flatten_condition(condition_node)
+                node[idx] = ['<CONDITION>'] + flattened_condition
+                idx += 1  # Move past the condition
             else:
-                # Terminal node (e.g., <FLOAT, 5>)
-                flattened.append(node)
+                # Unexpected structure
+                return
+            # Expect ')' at node[idx]
+            if node[idx][0] != '<SYMBOL_RPAREN, )>':
+                # Unexpected structure
+                return
+            del node[idx]  # Remove the ')'
+        else:
+            # Unexpected structure
+            return
 
-        return flattened
-
-    def process_assignment(assignment_node):
-        """
-        Processes an assignment node ('A') to flatten its expressions.
-
-        Args:
-            assignment_node: The assignment node to process.
-        """
-        # Find the index of the semicolon
-        try:
-            semicolon_index = assignment_node.index(['<SYMBOL_SEMICOLON, ;>'])
-        except ValueError:
-            semicolon_index = len(assignment_node)
-
-        # Extract the expression nodes between the operator and semicolon
-        expression_nodes = assignment_node[3:semicolon_index]
-
-        # Flatten the expression nodes
-        flattened_expression = flatten_expression(expression_nodes)
-
-        # Replace the expression nodes with the flattened expression
-        assignment_node[3:semicolon_index] = [['<EXPRESSION>'] + flattened_expression]
-
-    # Iterate over the module and process all assignments
-    for i in range(len(module)):
-        node = module[i]
-        if isinstance(node, list):
-            if node[0] == 'A' and node[1][0].startswith("<IDENTIFIER"):
-                process_assignment(node)
-            if node[0] == 'A' and node[1][0].startswith("<KW"):
-                # remove the comma from the keyword
-                split_index = node[1][0].index(",") + 1
-                node[1][0] = "<KW, " + node[1][0][split_index:]
-
-                # iterate over nodes and first remove P and P' and unnecessary symbols
-                c_index = 0
-                while c_index < len(node):
-                    inc = 1
-                    if node[c_index][0]  == "C":
-                        node[c_index] = ["<CONDITION>"] + flatten_condition(node[c_index])
-                        inc = 0
-                    if node[c_index][0].startswith("<SYMBOL"):
-                        node.pop(c_index)
-                        inc = 0
-                    if node[c_index][0] in ['P', "P'"]:
-                        node[c_index].pop(0)
-                        # remove the comma from the keyword
-                        split_index = node[c_index][0][0].index(",") + 1
-                        node[c_index][0] = "<KW, " + node[c_index][0][0][split_index:]
-                        inc = 0
-                    if inc:
-                        c_index += 1
-                flatten_expressions_in_module(node)
+    # Now, we expect '{' and then the block
+    if node[idx][0] == '<SYMBOL_LBRACE, {>':
+        del node[idx]  # Remove the '{'
+        # Process nodes inside the block until we find '}'
+        while idx < len(node):
+            child = node[idx]
+            if child[0] == '<SYMBOL_RBRACE, }>':
+                del node[idx]  # Remove the '}'
+                break
             else:
-                # Recursively process nested structures
-                flatten_expressions_in_module(node)
+                process_node(child)
+                idx += 1
+    else:
+        # Unexpected structure
+        return
 
-    return module
+    # Process any 'P' or "P'" nodes (elif/else clauses)
+    while idx < len(node):
+        child = node[idx] 
+        if isinstance(child, list) and child[0] in ('P', "P'"):
+            if len(child) < 2:
+                del node[idx]  # Remove the empty 'P' node
+            else:
+                process_control_flow(child)
+        else:
+            # Other nodes, process recursively
+            process_node(child)
+        idx += 1
+    if node[0] in ['P', "P'"]:
+        del node[0]
+        node[0] = node[0][0]
 
 def flatten_condition(condition_node):
     """
@@ -340,6 +390,28 @@ def flatten_condition(condition_node):
             flattened.append(node)
 
     traverse(condition_node)
+    return flattened
+
+def flatten_expression(expression_node):
+    """
+    Flattens a nested arithmetic expression 'E' node into a flat list of operands and operators.
+
+    Args:
+        expression_node: The expression node to flatten.
+
+    Returns:
+        list: A flattened list representing the expression.
+    """
+    flattened = []
+
+    def traverse(node):
+        if isinstance(node, list):
+            for child in node:
+                traverse(child)
+        elif(not node in ['E', "E'"]):
+            flattened.append(node)
+
+    traverse(expression_node)
     return flattened
 
 def remove_symbols(module):
