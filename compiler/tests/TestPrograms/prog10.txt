@@ -13,7 +13,7 @@
     },
     flatten0: {
     },
-    liner0: {
+    linear0: {
         dim_in = 576;
         dim_out = 128;
     },

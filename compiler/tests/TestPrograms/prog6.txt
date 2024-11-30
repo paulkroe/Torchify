@@ -3,9 +3,9 @@
         name = "Layer 0";
         activation = "Softmax";
         if (name == "Layer 0" and activation == "Softmax") {
-            dim_in = 512;
+            dim_in = 510 + 2;
             dim_out = 256;
-        } elif ("Layer 1") {
+        } elif ("Layer 1" and 1 + 0) {
             dim_in = 256;
             dim_out = 128;
         } else {

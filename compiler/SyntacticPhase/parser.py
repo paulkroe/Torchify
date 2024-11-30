@@ -206,7 +206,6 @@ def parse_tree_to_ast(node):
             fix_name(module)
             remove_symbols(module)
             remove_A_prime(module)
-            print(module)
             for node in module:
                 process_node(node)
             index += 1
@@ -223,7 +222,6 @@ def process_node(node):
     """
     if isinstance(node, list) and node:
         node_type = node[0]
-        print(node_type)
 
         if node_type == 'A':
             # Determine if the A node is a regular assignment or control flow
@@ -249,7 +247,6 @@ def process_A_node(node):
 
     if isinstance(second_element, list):
         element_value = second_element[0]
-        print(element_value)
         if element_value.startswith('<IDENTIFIER'):
             # Regular assignment
             process_assignment(node)
