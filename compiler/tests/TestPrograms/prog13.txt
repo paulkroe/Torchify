@@ -1,0 +1,10 @@
+{
+    conv2d0: {
+        in_channels = 3;
+        in_channels = 6;
+        out_channels = 64;
+        kernel_size = 11;
+        stride = 4;
+        padding = 2;
+    }
+}

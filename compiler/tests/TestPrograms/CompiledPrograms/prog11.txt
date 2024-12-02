@@ -1,0 +1,30 @@
+import torch
+import torch.nn as nn
+
+class Network(nn.Module):
+    def __init__(self):
+        super(Network, self).__init__()
+        # Define layers
+        self.conv2d0 = nn.Conv2d(1, 32, 3, stride=1, padding=1)
+        self.relu0 = nn.ReLU()
+        self.maxpool2d0 = nn.MaxPool2d(2, stride=2)
+        self.conv2d1 = nn.Conv2d(32, 64, 3, stride=1, padding=1)
+        self.relu1 = nn.ReLU()
+        self.maxpool2d1 = nn.MaxPool2d(2, stride=2)
+        self.flatten0 = nn.Flatten()
+        self.linear0 = nn.Linear(64 * 7 * 7, 128)
+        self.relu2 = nn.ReLU()
+        self.linear1 = nn.Linear(128, 10)
+
+    def forward(self, x):
+        x = self.conv2d0(x)
+        x = self.relu0(x)
+        x = self.maxpool2d0(x)
+        x = self.conv2d1(x)
+        x = self.relu1(x)
+        x = self.maxpool2d1(x)
+        x = self.flatten0(x)
+        x = self.linear0(x)
+        x = self.relu2(x)
+        x = self.linear1(x)
+        return x

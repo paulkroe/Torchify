@@ -1,0 +1,79 @@
+{
+    conv2d0: {
+        in_channels = 3;
+        out_channels = 64;
+        kernel_size = 11;
+        stride = 4;
+        padding = 2;
+    },
+    relu0: {
+    },
+    maxpool2d0: {
+        kernel_size = 3;
+        stride = 2;
+    },
+    conv2d1: {
+        in_channels = 64;
+        out_channels = 192;
+        kernel_size = 5;
+        padding = 2;
+    },
+    relu1: {
+    },
+    maxpool2d1: {
+        kernel_size = 3;
+        stride = 2;
+    },
+    conv2d2: {
+        in_channels = 192;
+        out_channels = 384;
+        kernel_size = 3;
+        padding = 1;
+    },
+    relu2: {
+    },
+    conv2d3: {
+        in_channels = 384;
+        out_channels = 256;
+        kernel_size = 3;
+        padding = 1;
+    },
+    relu3: {
+    },
+    conv2d4: {
+        in_channels = 256;
+        out_channels = 256;
+        kernel_size = 3;
+        padding = 1;
+    },   
+    relu4: {
+    },
+    maxpool2d2: {
+        kernel_size = 3;
+        stride = 2;
+    },
+    flatten0:{
+    },
+    dropout0: {
+        p = 0.5;
+    },
+    linear0: {
+        dim_in = 256 * 6 * 6;
+        dim_out = 4096;
+    },
+    relu5: {
+    },
+    dropout0: {
+        p = 0.5;
+    },
+    linear1: {
+        dim_in = 4096;
+        dim_out = 4096;
+    },
+    relu6: {
+    },
+    linear2: {
+        dim_in = 4096;
+        dim_out = 10;
+    }
+}

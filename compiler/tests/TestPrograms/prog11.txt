@@ -1,0 +1,40 @@
+{
+    conv2d0: {
+        in_channels = 1;
+        out_channels =32;
+        kernel_size = 3;
+        stride=1;
+        padding=1;
+    },
+    relu0: {
+    },
+    maxpool2d0: {
+        kernel_size = 2;
+        stride = 2;
+    },
+    conv2d1: {
+        in_channels = 32;
+        out_channels = 64;
+        kernel_size = 3;
+        stride=1;
+        padding=1;
+    },
+    relu1: {
+    },
+    maxpool2d1: {
+        kernel_size = 2;
+        stride = 2;
+    },
+    flatten0: {
+    },
+    linear0: {
+        dim_in = 64 * 7 * 7;
+        dim_out = 128;
+    },
+    relu2: {
+    },
+    linear1: {
+        dim_in = 128;
+        dim_out = 10;
+    }
+}
