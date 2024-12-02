@@ -42,3 +42,6 @@ data/
 # IDE files
 .vscode/
 .idea/
+
+
+['<SYMBOL_LBRACE, {>', '<IDENTIFIER, linear0>', '<SYMBOL_COLON, :>', '<SYMBOL_LBRACE, {>', '<IDENTIFIER, name>', '<OP_EQUAL, =>', '<LITERAL_STRING, "Layer 0">', '<SYMBOL_SEMICOLON, ;>', '<IDENTIFIER, dim_in>', '<OP_EQUAL, =>', '<FLOAT, 784>', '<SYMBOL_SEMICOLON, ;>', '<IDENTIFIER, dim_out>', '<OP_EQUAL, =>', '<FLOAT, 128>', '<SYMBOL_SEMICOLON, ;>', '<SYMBOL_RBRACE, }>', '<SYMBOL_COMMA, ,>', '<SYMBOL_COMMA, ,>', '<IDENTIFIER, linear2>', '<SYMBOL_COLON, :>', '<SYMBOL_LBRACE, {>', '<IDENTIFIER, name>', '<OP_EQUAL, =>', '<LITERAL_STRING, "Layer 1">', '<SYMBOL_SEMICOLON, ;>', '<IDENTIFIER, dim_in>', '<OP_EQUAL, =>', '<FLOAT, 128>', '<SYMBOL_SEMICOLON, ;>', '<IDENTIFIER, dim_out>', '<OP_EQUAL, =>', '<FLOAT, 10>', '<SYMBOL_SEMICOLON, ;>', '<SYMBOL_RBRACE, }>', '<SYMBOL_RBRACE, }>']

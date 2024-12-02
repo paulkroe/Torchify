@@ -1,0 +1,23 @@
+{
+    conv2d0: {
+        att = "correct";
+        out_channels = 64;
+        kernel_size = 11;
+        stride = 2;
+        padding = 2;
+    },
+    conv2d1: {
+        att = "incorrect, stride missing an expression";
+        out_channels = 64;
+        kernel_size = 11;
+        stride = ;
+        padding = 2;
+    },
+    conv2d2: {
+        att = "correct";
+        out_channels = 64;
+        kernel_size = 11;
+        stride = 2;
+        padding = 2;
+    }
+}
