@@ -110,11 +110,8 @@ def get_token(tag):
     else:
         return None
 
-
-
 def ll1_parse(input_tokens):
     stack = [("$", None), ("S", None)]
-    input_tokens.append('$')
     index = 0
 
     root_node = None
@@ -124,21 +121,40 @@ def ll1_parse(input_tokens):
     current_module = None
 
     while stack:
+        
         top_symbol, parent_node = stack.pop()
-        current_input = get_non_terminal(input_tokens[index])
 
-        if top_symbol == current_input == '$':
+        if top_symbol == '$':
             print("Accept")
             return True, root_node
+    
+        if index >= len(input_tokens):
+            # End of input reached unexpectedly
+            print("Error during Parsing: Unexpected end of input")
+            return False, None
 
-        elif top_symbol == current_input:
-            # Match terminal
-            node = [input_tokens[index]]
-            if parent_node is not None:
-                parent_node.append(node)
+        current_input = get_non_terminal(input_tokens[index])
+        
+        if is_terminal(top_symbol):
+            if top_symbol == current_input:
+                # Match terminal
+                node = [input_tokens[index]]
+                if parent_node is not None:
+                    parent_node.append(node)
+                else:
+                    root_node = node
+                index += 1
             else:
-                root_node = node
-            index += 1
+                # Error: terminal mismatch
+                print(f"Error during Parsing: Expected {top_symbol}, found {current_input} at position {index}")
+                # Error recovery: Remove the faulty module and restart parsing
+                if current_module_index is not None:
+                    input_tokens = remove_faulty_module(input_tokens, current_module_index)
+                    print(f"Ignoring module: \"{current_module}\"")
+                    return ll1_parse(input_tokens)  # Restart parsing
+                else:
+                    print("Reject")
+                    return False, None
 
         elif top_symbol in PARSE_TABLE:
             if current_input in PARSE_TABLE[top_symbol]:
@@ -155,44 +171,49 @@ def ll1_parse(input_tokens):
                 for symbol in reversed(production):
                     stack.append((symbol, node))
             else:
-                # Error detected, invoke panic mode
-                print(f"Error: No rule for {top_symbol} with input {current_input}")
-                # Invoke panic mode error recovery
+                # Error detected
+                print(f"Error during Parsing: No rule for {top_symbol} with input {current_input}")
+                print(input_tokens)
+                # Error recovery: Remove the faulty module and restart parsing
                 if current_module_index is not None:
-                    print(f"Error: Syntax error in module: \"{current_module}\"")
+                    input_tokens = remove_faulty_module(input_tokens, current_module_index)
                     print(f"Ignoring module: \"{current_module}\"")
-                    # Skip tokens until synchronization token
-                    try:
-                        # Find the index of the next synchronization token (e.g., comma)
-                        next_comma_index = index + input_tokens[index:].index("<SYMBOL_COMMA, ,>")
-                        index = next_comma_index + 1  # Move past the comma
-                    except ValueError:
-                        # No synchronization token found, cannot recover
-                        print("Reject")
-                        return False, None
-                    # Reset the stack to continue parsing after the skipped module
-                    while stack and stack[-1][0] != "M":
-                        stack.pop()
-                    if stack:
-                        stack.pop()  # Remove "M" from the stack
-                    continue  # Continue parsing from the new index
+                    return ll1_parse(input_tokens)  # Restart parsing
                 else:
                     print("Reject")
                     return False, None
 
         else:
-            # Handle unexpected symbols
-            print(f"Error: Unexpected symbol '{top_symbol}' at position {index}")
+            # Handle unexpected non-terminal symbols
+            print(f"Error during Parsing Phase: Unexpected non-terminal symbol '{top_symbol}' at position {index}")
             print("Reject")
             return False, None
 
     # If we exit the loop without matching the end of input
-    if index < len(input_tokens) - 1:
-        print("Error: Input not fully consumed")
+    if index < len(input_tokens):
+        print("Error during Parsing: Input not fully consumed")
         return False, None
 
     print("Accept")
     return True, root_node
+
+def remove_faulty_module(input_tokens, module_start_index):
+    # Copy input_tokens to avoid mutating the original list
+    tokens = input_tokens[:]
+    # Remove tokens from module_start_index to the next comma or closing brace
+    index = module_start_index
+    while index < len(tokens):
+        token = tokens[index]
+        if token == "<SYMBOL_COMMA, ,>" or token == "<SYMBOL_CLOSE_BRACE, }>":
+            index += 1
+            break
+        index += 1
+    # Remove tokens from module_start_index to index (inclusive)
+    del tokens[module_start_index:index]
+    return tokens
+
+def is_terminal(symbol):
+    return symbol not in NONTERMINALS
 
 def parse_tree_to_ast(node):
     ast = unnest_modules(node)

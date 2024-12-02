@@ -18,26 +18,52 @@ def process_ast(ast):
         layer['name'] = f'{module_type}{module_index}'
         assignments = {}
         for assignment_ast in module_ast[1:]:
-            # Extract variable name and value
+            # Extract variable name
             assert assignment_ast[0] == 'A'
             var_name_token = assignment_ast[1][0]
             var_name = var_name_token[len('<IDENTIFIER, '):-1]
-            value_token = assignment_ast[3][1]
-            if not isinstance(value_token, str) or not isinstance(var_name, str):
+            if not isinstance(var_name, str):
                 return None
-            if value_token.startswith('<LITERAL_STRING, "'):
-                value = value_token[len('<LITERAL_STRING, "'):-2]
-                value = f'"{value}"'  # Keep quotes around string literals
-            elif value_token.startswith('<FLOAT, '):
-                value = value_token[len('<FLOAT, '):-1]
-            elif value_token.startswith('<INTEGER, '):
-                value = value_token[len('<INTEGER, '):-1]
+
+            # Extract and process the value
+            value_ast = assignment_ast[3]
+            if value_ast[0] == '<EXPRESSION>':
+                # Process an expression recursively
+                value = parse_expression(value_ast[1:])
             else:
                 return None
             assignments[var_name] = value
+
         layer['assignments'] = assignments
         layers.append(layer)
     return layers
+
+def parse_expression(expression_tokens):
+    """
+    Recursively parse the tokens in an expression and reconstruct as a Python string.
+    """
+    result = []
+    for token in expression_tokens:
+        if token.startswith('<FLOAT, '):
+            result.append(token[len('<FLOAT, '):-1])
+        elif token.startswith('<INTEGER, '):
+            result.append(token[len('<INTEGER, '):-1])
+        elif token.startswith('<LITERAL_STRING, "'):
+            value = token[len('<LITERAL_STRING, "'):-2]
+            result.append(f'"{value}"')  # Keep quotes around string literals
+        elif token.startswith('<IDENTIFIER, '):
+            result.append(token[len('<IDENTIFIER, '):-1])
+        elif token.startswith('<OP_'):
+            # Extract operator symbols (e.g., *, +, -)
+            operator = token.split(', ')[1][:-1]
+            result.append(operator)
+        else:
+            # Handle unexpected token types gracefully
+            # raise ValueError(f"Unexpected token: {token}")
+            return None
+
+    # Join tokens to construct the Python expression
+    return ' '.join(result)
 
 def generate_code(ast):
     layers = process_ast(ast)
@@ -56,6 +82,7 @@ def generate_code(ast):
     module_mapping = {
         'linear': 'nn.Linear',
         'conv2d': 'nn.Conv2d',
+        'maxpool2d': 'nn.MaxPool2d',
         'flatten': 'nn.Flatten',
         'batchnorm2d': 'nn.BatchNorm2d',
         'batchnorm1d': 'nn.BatchNorm1d',
@@ -70,10 +97,11 @@ def generate_code(ast):
     module_params = {
         'linear': ['dim_in', 'dim_out'],
         'conv2d': ['in_channels', 'out_channels', 'kernel_size'],
-        'flatten': ['start_dim', 'end_dim'],  # Optional
-        'batchnorm2d': ['num_features'],  # Required
-        'batchnorm1d': ['num_features'],  # Required
-        'dropout': ['p'],  # Optional
+        'maxpool2d': ['kernel_size'],
+        'flatten': [],
+        'batchnorm2d': ['num_features'],
+        'batchnorm1d': ['num_features'],
+        'dropout': [],
         'relu': [],  # No parameters
         'tanh': [],
         'sigmoid': [],
@@ -82,8 +110,11 @@ def generate_code(ast):
 
     # Handle optional parameters
     optional_params = {
+        'conv2d': ['stride', 'padding'],
+        'maxpool2d': ['stride', 'padding'],
         'flatten': ['start_dim', 'end_dim'],
         'dropout': ['p'],
+        'relu': ['inplace'],
         # Add optional parameters for other modules if any
     }
 
@@ -91,7 +122,8 @@ def generate_code(ast):
         module_type = layer['type']
         module_class = module_mapping.get(module_type)
         if not module_class:
-            raise ValueError(f"Unsupported module type: {module_type}")
+            print(f"Unsupported module type: {module_type}")
+            return None
 
         assignments = layer['assignments']
         params = []
@@ -106,7 +138,8 @@ def generate_code(ast):
                 # Skip optional parameters if not provided
                 continue
             else:
-                raise ValueError(f"Missing parameter '{param}' for {module_type} layer: {layer['name']}")
+                print(f"Missing parameter '{param}' for {module_type} layer: {layer['name']}")
+                return None
 
         # For optional parameters, include them if provided
         if module_type in optional_params:
