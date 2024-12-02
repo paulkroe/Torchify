@@ -1,0 +1,57 @@
+Program
+└── linear
+│   └── A
+│   │   └── <IDENTIFIER, name>
+│   │   └── <OP_EQUAL, =>
+│   │   └── <EXPRESSION>
+│   │   │   └── <LITERAL_STRING, "Layer 0">
+│   │   └── <SYMBOL_SEMICOLON, ;>
+│   └── A
+│   │   └── <IDENTIFIER, activation>
+│   │   └── <OP_EQUAL, =>
+│   │   └── <EXPRESSION>
+│   │   │   └── <LITERAL_STRING, "Softmax">
+│   │   └── <SYMBOL_SEMICOLON, ;>
+│   └── A
+│   │   └── <KW_IF, if>
+│   │   └── <CONDITION>
+│   │   │   └── <IDENTIFIER, name>
+│   │   │   └── <OP_EQUAL_EQUAL, ==>
+│   │   │   └── <LITERAL_STRING, "Layer 0">
+│   │   └── A
+│   │   │   └── <IDENTIFIER, dim_in>
+│   │   │   └── <OP_EQUAL, =>
+│   │   │   └── <EXPRESSION>
+│   │   │   │   └── <FLOAT, 512>
+│   │   │   └── <SYMBOL_SEMICOLON, ;>
+│   │   └── A
+│   │   │   └── <IDENTIFIER, dim_out>
+│   │   │   └── <OP_EQUAL, =>
+│   │   │   └── <EXPRESSION>
+│   │   │   │   └── <FLOAT, 256>
+│   │   │   └── <SYMBOL_SEMICOLON, ;>
+│   │   └── A
+│   │   │   └── <KW_IF, if>
+│   │   │   └── <CONDITION>
+│   │   │   │   └── <IDENTIFIER, dim_in>
+│   │   │   │   └── <OP_EQUAL_EQUAL, ==>
+│   │   │   │   └── <FLOAT, 512>
+│   │   │   │   └── <OP_PLUS, +>
+│   │   │   │   └── <FLOAT, 1>
+│   │   │   └── A
+│   │   │   │   └── <IDENTIFIER, some_id>
+│   │   │   │   └── <OP_EQUAL, =>
+│   │   │   │   └── <EXPRESSION>
+│   │   │   │   │   └── <LITERAL_STRING, "some string">
+│   │   │   │   └── <SYMBOL_SEMICOLON, ;>
+│   │   │   └── A
+│   │   │   │   └── <IDENTIFIER, some_other_id>
+│   │   │   │   └── <OP_EQUAL, =>
+│   │   │   │   └── <EXPRESSION>
+│   │   │   │   │   └── <LITERAL_STRING, "some other string">
+│   │   │   │   └── <SYMBOL_SEMICOLON, ;>
+│   │   │   └── P'
+│   │   └── A
+│   │   │   └── <KW_PASS, pass>
+│   │   │   └── <SYMBOL_SEMICOLON, ;>
+│   │   └── P'

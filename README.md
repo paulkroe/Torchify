@@ -3,7 +3,22 @@ Group members: Paul Kroeger (pk2819)
 
 # Part 3: Code Generation Phase
 
+### Sample Input Programs
+To demonstrate the capabilities of our compiler we provide 5 sample programs (`prog10, ..., prog14`) in `compiler/tests/TestPrograms`.
+- `prog10`: Example program that generates a simple feed forward neural network
+- `prog11`: Example program that generates a simple convolutional neural network
+- `prog12`: More involved example program that replicates the AlexNet architecture
+- `prog13`: Small example that shows some basic dead code elemination and how constants are handled
+- `prog14`: Simple example that shows how the program detects and handles errors.
+
+- `prog8`: Invalid program that demonstrates how panic mode deals with invalid programs (input_tensor_shape["*"]; is missing an  "=")
+The downside of panic mode is that it can't handle cases where closing braces are missing to function as delimiters.
+- `prog9`: Invalid program that demonstrates errors panic mode can't recover from
+
+
 # Part 2: Syntacital Phase
+
+__Note: While working on the code generation phase I adjusted the function that converts a given parse tree to an AST to better accomodate the needs of my code generator. Therefore, the asts shown in the video demo are outdated. I provided the corresponding new ASTS in `compiler/tests/TestPrograms/ASTS`.__
 
 To provide a better intuition of the kind of program we want to accept consider the following valid program:
 ```
@@ -198,6 +213,9 @@ In case you are not using conda, please run the following commands after setting
 cd compiler
 pip install -e .
 pip install pytest
+pip install torch
+pip install torchvision
+pip install tqdm
 cd ..
 
 python3 compiler/tests/TestPrograms/testprogs.py

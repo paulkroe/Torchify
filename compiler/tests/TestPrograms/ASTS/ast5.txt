@@ -1,0 +1,93 @@
+Program
+└── linear0
+│   └── A
+│   │   └── <IDENTIFIER, name>
+│   │   └── <OP_EQUAL, =>
+│   │   └── <EXPRESSION>
+│   │   │   └── <LITERAL_STRING, "Layer 0">
+│   │   └── <SYMBOL_SEMICOLON, ;>
+│   └── A
+│   │   └── <IDENTIFIER, dim_in>
+│   │   └── <OP_EQUAL, =>
+│   │   └── <EXPRESSION>
+│   │   │   └── <FLOAT, 784>
+│   │   └── <SYMBOL_SEMICOLON, ;>
+│   └── A
+│   │   └── <IDENTIFIER, dim_out>
+│   │   └── <OP_EQUAL, =>
+│   │   └── <EXPRESSION>
+│   │   │   └── <FLOAT, 128>
+│   │   └── <SYMBOL_SEMICOLON, ;>
+│   └── A
+│   │   └── <IDENTIFIER, input_tensor_shape>
+│   │   └── <OP_EQUAL, =>
+│   │   └── <EXPRESSION>
+│   │   │   ├── L
+│   │   │   ├── <SYMBOL_LBRACKET, [>
+│   │   │   ├── <LITERAL_STRING, "*">
+│   │   │   ├── L'
+│   │   │   ├── <SYMBOL_COMMA, ,>
+│   │   │   ├── <FLOAT, 784>
+│   │   │   ├── L'
+│   │   │   └── <SYMBOL_RBRACKET, ]>
+│   │   └── <SYMBOL_SEMICOLON, ;>
+│   └── A
+│   │   └── <IDENTIFIER, output_tensor_shape>
+│   │   └── <OP_EQUAL, =>
+│   │   └── <EXPRESSION>
+│   │   │   ├── L
+│   │   │   ├── <SYMBOL_LBRACKET, [>
+│   │   │   ├── <LITERAL_STRING, "*">
+│   │   │   ├── L'
+│   │   │   ├── <SYMBOL_COMMA, ,>
+│   │   │   ├── <FLOAT, 128>
+│   │   │   ├── L'
+│   │   │   └── <SYMBOL_RBRACKET, ]>
+│   │   └── <SYMBOL_SEMICOLON, ;>
+└── linear1
+│   └── A
+│   │   └── <IDENTIFIER, name>
+│   │   └── <OP_EQUAL, =>
+│   │   └── <EXPRESSION>
+│   │   │   └── <LITERAL_STRING, "Layer 1">
+│   │   └── <SYMBOL_SEMICOLON, ;>
+│   └── A
+│   │   └── <IDENTIFIER, dim_in>
+│   │   └── <OP_EQUAL, =>
+│   │   └── <EXPRESSION>
+│   │   │   ├── <FLOAT, 128>
+│   │   │   ├── <OP_PLUS, +>
+│   │   │   └── <FLOAT, 1>
+│   │   └── <SYMBOL_SEMICOLON, ;>
+│   └── A
+│   │   └── <IDENTIFIER, dim_out>
+│   │   └── <OP_EQUAL, =>
+│   │   └── <EXPRESSION>
+│   │   │   └── <FLOAT, 10>
+│   │   └── <SYMBOL_SEMICOLON, ;>
+│   └── A
+│   │   └── <IDENTIFIER, input_tensor_shape>
+│   │   └── <OP_EQUAL, =>
+│   │   └── <EXPRESSION>
+│   │   │   ├── L
+│   │   │   ├── <SYMBOL_LBRACKET, [>
+│   │   │   ├── <LITERAL_STRING, "*">
+│   │   │   ├── L'
+│   │   │   ├── <SYMBOL_COMMA, ,>
+│   │   │   ├── <FLOAT, 128>
+│   │   │   ├── L'
+│   │   │   └── <SYMBOL_RBRACKET, ]>
+│   │   └── <SYMBOL_SEMICOLON, ;>
+│   └── A
+│   │   └── <IDENTIFIER, output_tensor_shape>
+│   │   └── <OP_EQUAL, =>
+│   │   └── <EXPRESSION>
+│   │   │   ├── L
+│   │   │   ├── <SYMBOL_LBRACKET, [>
+│   │   │   ├── <LITERAL_STRING, "*">
+│   │   │   ├── L'
+│   │   │   ├── <SYMBOL_COMMA, ,>
+│   │   │   ├── <FLOAT, 10>
+│   │   │   ├── L'
+│   │   │   └── <SYMBOL_RBRACKET, ]>
+│   │   └── <SYMBOL_SEMICOLON, ;>

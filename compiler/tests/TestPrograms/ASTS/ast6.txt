@@ -1,0 +1,70 @@
+Program
+└── linear
+│   └── A
+│   │   └── <IDENTIFIER, name>
+│   │   └── <OP_EQUAL, =>
+│   │   └── <EXPRESSION>
+│   │   │   └── <LITERAL_STRING, "Layer 0">
+│   │   └── <SYMBOL_SEMICOLON, ;>
+│   └── A
+│   │   └── <IDENTIFIER, activation>
+│   │   └── <OP_EQUAL, =>
+│   │   └── <EXPRESSION>
+│   │   │   └── <LITERAL_STRING, "Softmax">
+│   │   └── <SYMBOL_SEMICOLON, ;>
+│   └── A
+│   │   └── <KW_IF, if>
+│   │   └── <CONDITION>
+│   │   │   └── <IDENTIFIER, name>
+│   │   │   └── <OP_EQUAL_EQUAL, ==>
+│   │   │   └── <LITERAL_STRING, "Layer 0">
+│   │   │   └── <KW_AND, and>
+│   │   │   └── <IDENTIFIER, activation>
+│   │   │   └── <OP_EQUAL_EQUAL, ==>
+│   │   │   └── <LITERAL_STRING, "Softmax">
+│   │   └── A
+│   │   │   └── <IDENTIFIER, dim_in>
+│   │   │   └── <OP_EQUAL, =>
+│   │   │   └── <EXPRESSION>
+│   │   │   │   ├── <FLOAT, 510>
+│   │   │   │   ├── <OP_PLUS, +>
+│   │   │   │   └── <FLOAT, 2>
+│   │   │   └── <SYMBOL_SEMICOLON, ;>
+│   │   └── A
+│   │   │   └── <IDENTIFIER, dim_out>
+│   │   │   └── <OP_EQUAL, =>
+│   │   │   └── <EXPRESSION>
+│   │   │   │   └── <FLOAT, 256>
+│   │   │   └── <SYMBOL_SEMICOLON, ;>
+│   │   └── <KW_ELIF, elif>
+│   │   │   └── <CONDITION>
+│   │   │   │   └── <LITERAL_STRING, "Layer 1">
+│   │   │   │   └── <KW_AND, and>
+│   │   │   │   └── <FLOAT, 1>
+│   │   │   │   └── <OP_PLUS, +>
+│   │   │   │   └── <FLOAT, 0>
+│   │   │   └── A
+│   │   │   │   └── <IDENTIFIER, dim_in>
+│   │   │   │   └── <OP_EQUAL, =>
+│   │   │   │   └── <EXPRESSION>
+│   │   │   │   │   └── <FLOAT, 256>
+│   │   │   │   └── <SYMBOL_SEMICOLON, ;>
+│   │   │   └── A
+│   │   │   │   └── <IDENTIFIER, dim_out>
+│   │   │   │   └── <OP_EQUAL, =>
+│   │   │   │   └── <EXPRESSION>
+│   │   │   │   │   └── <FLOAT, 128>
+│   │   │   │   └── <SYMBOL_SEMICOLON, ;>
+│   │   └── <KW_ELSE, else>
+│   │   │   └── A
+│   │   │   │   └── <IDENTIFIER, dim_in>
+│   │   │   │   └── <OP_EQUAL, =>
+│   │   │   │   └── <EXPRESSION>
+│   │   │   │   │   └── <FLOAT, 128>
+│   │   │   │   └── <SYMBOL_SEMICOLON, ;>
+│   │   │   └── A
+│   │   │   │   └── <IDENTIFIER, dim_out>
+│   │   │   │   └── <OP_EQUAL, =>
+│   │   │   │   └── <EXPRESSION>
+│   │   │   │   │   └── <FLOAT, 64>
+│   │   │   │   └── <SYMBOL_SEMICOLON, ;>

@@ -27,6 +27,7 @@ ENV/
 env.bak/
 venv.bak/
 *.tar
+data/
 
 # Byte-compiled / optimized / DLL files
 *.pyc
