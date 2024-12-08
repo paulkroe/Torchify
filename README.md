@@ -3,18 +3,49 @@ Group members: Paul Kroeger (pk2819)
 
 # Part 3: Code Generation Phase
 
+__Note: While working on the code generation phase I adjusted the function that converts a given parse tree to an AST to better accomodate the needs of my code generator. Therefore, the ASTs shown in the video demo are outdated. I provided the corresponding new ASTS in `compiler/tests/TestPrograms/ASTS`.__
+
+The video demonstration for this part can be found in `demo.mp4`.
+
+The code generator takes the Abstract Syntax Tree (AST) produced by the compiler’s previous stages and translates it into executable PyTorch code. The main component of this phase is implemented in [`compiler/CodeGenerationPhase/codegenerator.py`](compiler/CodeGenerationPhase/codegenerator.py).
+
+**How it Works:**
+
+1. **AST Processing:**  
+   The code generator begins by traversing the AST to identify each computational layer (e.g., linear layers, convolutional layers, activation functions). Each node in the AST corresponds to a module.
+
+2. **Module Extraction:**  
+   For each module node, the code generator infers the module’s name, type, and associated parameters. These parameters may be required (like `in_channels` or `kernel_size` for convolutions) or optional (like `stride` or `padding`).
+
+3. **Parameter Mapping:**  
+   A mapping between the high-level module descriptors (e.g., "Conv2D") and their PyTorch equivalents (e.g., `nn.Conv2d`) is defined. This mapping also specifies which parameters must be provided, which are optional, and how they should be formatted in Python code. These mappings are generic in the sense that they can be easily added and edited to add support for new modules or change how a given module should handle its input parameters.
+
+4. **Code Synthesis:**  
+   Using these mappings and the extracted parameters, the code generator constructs Python code strings that instantiate the corresponding PyTorch layers. It then assembles these generated lines into a complete `nn.Module` subclass definition.
+
+5. **Forward Pass Composition:**  
+   Finally, the generated code implements a `forward()` method, chaining the defined modules together in the order specified by the AST. This ensures that the resulting `Network` class reflects the original high-level model specification from the compiler’s intermediate representation.
+
+The end result is a functional PyTorch `nn.Module` class that can be integrated into training scripts, tested, and executed, all without manually writing the boilerplate code.
+
+This project intentionally does not perform constant folding. When writing PyTorch modules, it is common to express layer parameters in a form like:
+
+```python
+self.linear = nn.Linear(4 * 4, num_classes)
+```
+This style is often used to clarify that the input to this linear layer corresponds to a flattened \(4 \times 4\) tensor (possibly following a pooling or convolutionc), making the network structure and its components more intuitive and easier to understand. Avoiding constant folding preserves this expressiveness in the generated code. Additionally, in the context of typical machine learning tasks, the overhead of performing a simple multiplication like \(4 \times 4\) at runtime is negligible compared to the computational requirements of training and inference. Therefore, this trade-off prioritizes code readability and developer understanding over minimal runtime optimization.
+
+The compiled sample programs can be found in `compiler/CompiledPrograms`.
+
 ### Sample Input Programs
 To demonstrate the capabilities of our compiler we provide 5 sample programs (`prog10, ..., prog14`) in `compiler/tests/TestPrograms`.
 - `prog10`: Example program that generates a simple feed forward neural network
 - `prog11`: Example program that generates a simple convolutional neural network
 - `prog12`: More involved example program that replicates the AlexNet architecture
 - `prog13`: Small example that shows some basic dead code elemination and how constants are handled
-- `prog14`: Simple example that shows how the program detects and handles errors.
-
-- `prog8`: Invalid program that demonstrates how panic mode deals with invalid programs (input_tensor_shape["*"]; is missing an  "=")
-The downside of panic mode is that it can't handle cases where closing braces are missing to function as delimiters.
-- `prog9`: Invalid program that demonstrates errors panic mode can't recover from
-
+- `prog14`: Simple example that shows how the program detects and handles in the Lexical Phase
+- `prog15`: Simple example that shows how the program detects and handles in the Syntactic Phase
+- `prog16`: Simple example that shows how the program detects and handles in the Code Generation Phase
 
 # Part 2: Syntacital Phase
 
