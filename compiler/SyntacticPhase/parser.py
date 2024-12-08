@@ -173,7 +173,6 @@ def ll1_parse(input_tokens):
             else:
                 # Error detected
                 print(f"Error during Parsing: No rule for {top_symbol} with input {current_input}")
-                print(input_tokens)
                 # Error recovery: Remove the faulty module and restart parsing
                 if current_module_index is not None:
                     input_tokens = remove_faulty_module(input_tokens, current_module_index)
