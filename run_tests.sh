@@ -5,6 +5,9 @@ conda activate Torchify
 cd compiler
 pip install -e .
 pip install pytest
+pip install torch
+pip install torchvision
+pip install tqdm
 cd ..
 
 python3 compiler/tests/TestPrograms/testprogs.py
