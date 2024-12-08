@@ -1,6 +1,7 @@
 {
     conv2d0: {
         att = "correct";
+        in_channels = 32;
         out_channels = 64;
         kernel_size = 11;
         stride = 2;
@@ -15,6 +16,7 @@
     },
     conv2d2: {
         att = "correct";
+        in_channels = 64;
         out_channels = 64;
         kernel_size = 11;
         stride = 2;

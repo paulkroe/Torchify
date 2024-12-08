@@ -1,5 +1,6 @@
 {
     conv2d0: {
+        in_channels = 64;
         out_channels = 64;
         kernel_size = 11;
         stride = 4;

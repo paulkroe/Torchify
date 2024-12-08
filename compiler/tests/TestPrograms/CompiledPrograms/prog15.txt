@@ -5,8 +5,10 @@ class Network(nn.Module):
     def __init__(self):
         super(Network, self).__init__()
         # Define layers
-        self.conv2d0 = nn.Conv2d(64, 64, 11, stride=4, padding=2)
+        self.conv2d0 = nn.Conv2d(32, 64, 11, stride=2, padding=2)
+        self.conv2d2 = nn.Conv2d(64, 64, 11, stride=2, padding=2)
 
     def forward(self, x):
         x = self.conv2d0(x)
+        x = self.conv2d2(x)
         return x
