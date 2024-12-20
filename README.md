@@ -2,7 +2,7 @@
 Group members: Paul Kroeger (pk2819)
 
 # (Optional) Part 4: Code Optimization:
-To show some code optimization capabilites we added the following functionallity. Torchify now supports the use of a code module. this code module should be used to define and compute dimensions and other variables needed accross the initialization of several modules. For a more detailed explaination please consider the video demonstartion. In the code section we do the following optimizations:
+To show some code optimization capabilites we added the following functionallity. Torchify now supports the use of a code module. this code module should be used to define and compute dimensions and other variables needed accross the initialization of several modules. For a more detailed explaination please consider the video demonstartion (`demo.mp4`). In the code section we do the following optimizations:
 
 1. Constant folding
 
