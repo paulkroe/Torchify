@@ -13,7 +13,9 @@ To show some code optimization capabilites we added the following functionallity
 4. Common Subexpression Elimination
 
 4. Algebraic Optimization
+
 The static order in which they are performed is the following:
+
 1. Constant folding
 2. Copy Propagation
 3. Algebraic Optimization
