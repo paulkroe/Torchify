@@ -1,3 +1,4 @@
+from .optimization import optimize
 def process_ast(ast):
     layers = []
     assert ast[0] == 'Program'
@@ -90,9 +91,9 @@ def generate_code(ast):
         'relu': 'nn.ReLU',
         'tanh': 'nn.Tanh',
         'sigmoid': 'nn.Sigmoid',
+        'code': '*',
         # Add more mappings here
     }
-
     # Parameters required for each module type
     module_params = {
         'linear': ['dim_in', 'dim_out'],
@@ -101,10 +102,11 @@ def generate_code(ast):
         'flatten': [],
         'batchnorm2d': ['num_features'],
         'batchnorm1d': ['num_features'],
-        'dropout': [],
         'relu': [],  # No parameters
+        'dropout': [],
         'tanh': [],
         'sigmoid': [],
+        'code': [],
         # Add more modules and their parameters here
     }
 
@@ -118,6 +120,8 @@ def generate_code(ast):
         # Add optional parameters for other modules if any
     }
 
+    global_params = {}
+
     for layer in layers:
         module_type = layer['type']
         module_class = module_mapping.get(module_type)
@@ -126,17 +130,27 @@ def generate_code(ast):
             return None
 
         assignments = layer['assignments']
+        if (module_type == 'code'):
+            global_params = assignments
+            global_params = optimize(global_params, ['dim_in', 'dim_out', 'in_channels', 'out_channels', 'kernel_size', 'num_features', 'stride', 'padding', 'start_dim', 'end_dim', 'p', 'inplace']
+)
+            for key, item in global_params.items():
+                code_lines.append(f'        {key} = {item}')
+            continue
         params = []
         required_params = module_params.get(module_type, [])
 
         # Extract parameters
         for param in required_params:
             value = assignments.get(param)
+            global_value = global_params.get(param)
             if value:
                 params.append(f'{value}')
             elif module_type in optional_params and param in optional_params[module_type]:
                 # Skip optional parameters if not provided
                 continue
+            elif global_value:
+                params.append(f'{global_value}') 
             else:
                 print(f"Missing parameter '{param}' for {module_type} layer: {layer['name']}")
                 return None
@@ -154,7 +168,8 @@ def generate_code(ast):
     code_lines.append('')
     code_lines.append('    def forward(self, x):')
     for layer in layers:
-        code_lines.append(f'        x = self.{layer["name"]}(x)')
+        if layer['type'] != 'code':
+            code_lines.append(f'        x = self.{layer["name"]}(x)')
     code_lines.append('        return x')
     code_lines.append('')
     return '\n'.join(code_lines)
