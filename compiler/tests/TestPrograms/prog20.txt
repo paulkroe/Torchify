@@ -1,6 +1,9 @@
 {
     code: {
-        in_channels = algebraic_optim * 2; 
+        test = 3;
+        test2 = test;
+        in_channels = 64 * 2 * test2 * test; 
+        unused_var =  in_channels * 10;
     },
     conv2d0: {
         out_channels = 64;
