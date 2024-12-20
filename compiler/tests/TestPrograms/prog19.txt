@@ -1,0 +1,15 @@
+{
+    code: {
+        test = 3;
+        test2 = test;
+        in_channels = 64 * 2 * test2 * test; 
+        out_channels = 64 * in_channels;
+        unused_var =  in_channels * 10;
+    },
+    conv2d0: {
+        out_channels = 64;
+        kernel_size = 11;
+        stride = 4;
+        padding = 2$;
+    }
+}

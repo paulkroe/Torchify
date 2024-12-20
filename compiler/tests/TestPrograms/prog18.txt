@@ -1,0 +1,12 @@
+{
+    code: {
+        test = copyprop;
+        in_channels = 2*test;
+    },
+    conv2d0: {
+        out_channels = 64;
+        kernel_size = 11;
+        stride = 4;
+        padding = 2$;
+    }
+}
