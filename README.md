@@ -8,11 +8,11 @@ To show some code optimization capabilites we added the following functionallity
 
 2. Copy Propagation
 
-3. Dead Code Elimination
+3. Algebraic Optimization
 
 4. Common Subexpression Elimination
 
-4. Algebraic Optimization
+5. Dead Code Elimination
 
 The static order in which they are performed is the following:
 
@@ -23,6 +23,7 @@ The static order in which they are performed is the following:
 5. Dead Code Elimination
 Each of these is repeated until the intermediate code does not change
 
+The compiled programs for this part (prog17 - prog20) can be found in `compiler/test/TestPrograms/CompiledPrograms`.
 # Part 3: Code Generation Phase
 
 __Note: While working on the code generation phase I adjusted the function that converts a given parse tree to an AST to better accomodate the needs of my code generator. Therefore, the ASTs shown in the video demo are outdated. I provided the corresponding new ASTS in `compiler/tests/TestPrograms/ASTS`.__
